@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Aurora from "./Aurora";
 import { ArrowRight } from "lucide-react";
 
@@ -43,11 +44,13 @@ const Hero = () => {
             analytics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <button className="bg-green-600 text-white px-8 py-4 rounded-full hover:bg-green-700 transition-colors flex items-center justify-center font-medium text-lg">
-              Start Predicting <ArrowRight className="ml-2 w-5 h-5" />
+            <button className="cursor-pointer bg-green-600 text-white px-8 py-4 rounded-full hover:bg-green-700 transition-colors font-medium text-lg">
+              <Link href="/login" className="flex items-center justify-center">
+                Start Predicting <ArrowRight className="ml-2 w-5 h-5" />
+              </Link>
             </button>
-            <button className="border-2 border-white/30 text-white px-8 py-4 rounded-full hover:border-white/50 transition-colors font-medium text-lg backdrop-blur-sm">
-              Watch Demo
+            <button className="cursor-pointer border-2 border-white/30 text-white px-8 py-4 rounded-full hover:border-white/50 transition-colors font-medium text-lg backdrop-blur-sm">
+              <Link href="/signup">Sign Up For Free</Link>
             </button>
           </div>
         </div>

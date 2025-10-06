@@ -1,4 +1,4 @@
-import { icons } from "lucide-react";
+import { BarChart3, Bell, Home, icons, Settings, User } from "lucide-react";
 
 export const FEATURES = [
   {
@@ -19,4 +19,12 @@ export const FEATURES = [
     description:
       "Hyperlocal weather insights for precise location-based forecasting.",
   },
+];
+
+export const NAVIGATION = [
+  { name: "Dashboard", href: "/user/dashboard", icon: Home },
+  { name: "Analytics", href: "/user/analytics", icon: BarChart3 },
+  { name: "Notifications", href: "/user/notifications", icon: Bell },
+  { name: "Profile", href: "/user/profile", icon: User },
+  { name: "Settings", href: "/user/settings", icon: Settings },
 ];
