@@ -1,87 +1,118 @@
 "use client";
 import { useState, useEffect } from "react";
-import { 
-  Thermometer, 
-  Droplets, 
-  Gauge, 
-  CloudRain, 
+import {
+  Thermometer,
+  Droplets,
+  Gauge,
+  CloudRain,
   MapPin,
   Bell,
   Activity,
-  Sprout
+  Sprout,
 } from "lucide-react";
-import OnboardingModal from "../../../components/dashboard/OnboardingModal";
+import OnboardingModal from "@/components/OnboardingModal";
+import Header from "@/components/Header";
+import SensorCard from "@/components/SensorCard";
+import ActivityCard from "@/components/ActivityCard";
 
 export default function Dashboard() {
   const [showOnboarding, setShowOnboarding] = useState(true);
+  const activities = [
+    {
+      color: "bg-green-400",
+      title: "Soil moisture alert configured",
+      time: "2 hours ago",
+    },
+    {
+      color: "bg-blue-400",
+      title: "Irrigation schedule updated",
+      time: "1 day ago",
+    },
+    {
+      color: "bg-yellow-400",
+      title: "Crop growth stage recorded",
+      time: "2 days ago",
+    },
+    {
+      color: "bg-purple-400",
+      title: "Weather forecast reviewed",
+      time: "3 days ago",
+    },
+    {
+      color: "bg-red-400",
+      title: "Drought risk assessment",
+      time: "4 days ago",
+    },
+    {
+      color: "bg-cyan-400",
+      title: "Rainfall data synchronized",
+      time: "5 days ago",
+    },
+  ];
 
   return (
-    <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-white">Farm Dashboard</h1>
-          <p className="text-gray-400">Welcome back, John! Here's your farm's current conditions.</p>
-        </div>
+    <div className="p-4 lg:p-6 space-y-6 overflow-x-hidden">
+      <Header
+        title="Farmer John"
+        description={`Welcome, Farmer John! Here's an overview of your farm's latest conditions and activities.`}
+      >
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-gray-400">
             <MapPin className="w-4 h-4" />
-            <span className="text-sm">Iowa Farm, USA</span>
+            <span className="text-sm">Tagum City, PH</span>
           </div>
-          <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors">
-            <Bell className="w-4 h-4" />
-          </button>
         </div>
-      </div>
+      </Header>
 
       {/* Farm Metrics Cards */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Primary Metrics */}
         <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <Thermometer className="w-8 h-8 text-orange-400" />
-              <span className="text-3xl font-bold text-white">27.3°C</span>
-            </div>
-            <h3 className="text-gray-300 font-medium">Temperature</h3>
-            <p className="text-green-400 text-sm mt-1">Optimal for crops</p>
-          </div>
+          <SensorCard
+            icon={Thermometer}
+            iconColor="text-orange-400"
+            value="27.3°C"
+            title="Temperature"
+            status="Optimal for crops"
+            statusColor="text-green-400"
+          />
 
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <Sprout className="w-8 h-8 text-green-400" />
-              <span className="text-3xl font-bold text-white">72.7%</span>
-            </div>
-            <h3 className="text-gray-300 font-medium">Soil Moisture</h3>
-            <p className="text-green-400 text-sm mt-1">Good levels</p>
-          </div>
+          <SensorCard
+            icon={Sprout}
+            iconColor="text-green-400"
+            value="72.7%"
+            title="Soil Moisture"
+            status="Good levels"
+            statusColor="text-green-400"
+          />
 
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <Droplets className="w-8 h-8 text-blue-400" />
-              <span className="text-3xl font-bold text-white">82.4%</span>
-            </div>
-            <h3 className="text-gray-300 font-medium">Humidity</h3>
-            <p className="text-yellow-400 text-sm mt-1">High levels</p>
-          </div>
+          <SensorCard
+            icon={Droplets}
+            iconColor="text-blue-400"
+            value="82.4%"
+            title="Humidity"
+            status="High levels"
+            statusColor="text-yellow-400"
+          />
 
-          <div className="bg-gray-800 rounded-2xl p-6 border border-gray-700">
-            <div className="flex items-center justify-between mb-4">
-              <CloudRain className="w-8 h-8 text-cyan-400" />
-              <span className="text-3xl font-bold text-white">0.005mm</span>
-            </div>
-            <h3 className="text-gray-300 font-medium">Rainfall</h3>
-            <p className="text-red-400 text-sm mt-1">Very low</p>
-          </div>
+          <SensorCard
+            icon={CloudRain}
+            iconColor="text-cyan-400"
+            value="0.005mm"
+            title="Rainfall"
+            status="Very low"
+            statusColor="text-red-400"
+          />
         </div>
 
-        {/* Summary Card */}
         <div className="bg-gradient-to-br from-green-600 to-green-700 rounded-2xl p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <Gauge className="w-8 h-8 text-green-200" />
             <span className="text-2xl font-bold">1010hPa</span>
           </div>
-          <h3 className="text-green-100 font-medium mb-4">Atmospheric Pressure</h3>
+          <h3 className="text-green-100 font-medium mb-4">
+            Atmospheric Pressure
+          </h3>
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-green-200">Conditions:</span>
@@ -105,64 +136,23 @@ export default function Dashboard() {
           <h2 className="text-xl font-bold text-white">Recent Farm Activity</h2>
           <Activity className="w-5 h-5 text-gray-400" />
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Soil moisture alert configured</p>
-              <p className="text-gray-400 text-xs">2 hours ago</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-blue-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Irrigation schedule updated</p>
-              <p className="text-gray-400 text-xs">1 day ago</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Crop growth stage recorded</p>
-              <p className="text-gray-400 text-xs">2 days ago</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Weather forecast reviewed</p>
-              <p className="text-gray-400 text-xs">3 days ago</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-red-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Drought risk assessment</p>
-              <p className="text-gray-400 text-xs">4 days ago</p>
-            </div>
-          </div>
-          
-          <div className="flex items-center space-x-4 p-4 bg-gray-700/50 rounded-lg">
-            <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
-            <div className="flex-1">
-              <p className="text-white text-sm">Rainfall data synchronized</p>
-              <p className="text-gray-400 text-xs">5 days ago</p>
-            </div>
-          </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {activities.map((activity, index) => (
+            <ActivityCard
+              key={index}
+              color={activity.color}
+              title={activity.title}
+              time={activity.time}
+            />
+          ))}
         </div>
       </div>
 
-
-
       {/* Onboarding Modal */}
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => setShowOnboarding(false)} 
+      <OnboardingModal
+        isOpen={showOnboarding}
+        onClose={() => setShowOnboarding(false)}
       />
     </div>
   );

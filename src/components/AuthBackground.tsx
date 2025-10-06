@@ -1,4 +1,4 @@
-import Aurora from "../Aurora";
+import Aurora from "./Aurora";
 
 interface AuthBackgroundProps {
   children: React.ReactNode;
@@ -16,10 +16,10 @@ export default function AuthBackground({ children }: AuthBackgroundProps) {
           speed={0.3}
         />
       </div>
-      
+
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/30"></div>
-      
+
       {/* Content */}
       <div className="relative z-10 h-full flex items-center justify-center p-8 lg:p-12">
         {children}

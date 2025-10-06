@@ -3,10 +3,10 @@ import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "../../components/Logo";
-import InputField from "../../components/auth/InputField";
-import GoogleButton from "../../components/auth/GoogleButton";
-import Divider from "../../components/auth/Divider";
-import AuthBackground from "../../components/auth/AuthBackground";
+import InputField from "../../components/InputField";
+import GoogleButton from "../../components/GoogleButton";
+import Divider from "../../components/Divider";
+import AuthBackground from "../../components/AuthBackground";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
@@ -130,11 +130,14 @@ export default function Signup() {
       <div className="hidden lg:flex lg:w-1/2">
         <AuthBackground>
           <div className="text-center text-white max-w-lg">
-            <h2 className="text-3xl lg:text-4xl font-bold mb-6">Join the Future of Farming</h2>
+            <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+              Join the Future of Farming
+            </h2>
             <p className="text-lg lg:text-xl text-gray-200 mb-8">
-              Transform your agricultural operations with AI-powered weather intelligence and precision farming insights.
+              Transform your agricultural operations with AI-powered weather
+              intelligence and precision farming insights.
             </p>
-            
+
             {/* Features list */}
             <div className="space-y-4 text-left max-w-sm mx-auto">
               <div className="flex items-center space-x-3">

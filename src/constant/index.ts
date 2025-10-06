@@ -1,4 +1,12 @@
-import { BarChart3, Bell, Home, icons, Settings, User } from "lucide-react";
+import {
+  BarChart3,
+  Bell,
+  Home,
+  icons,
+  MessageCircleIcon,
+  Settings,
+  User,
+} from "lucide-react";
 
 export const FEATURES = [
   {
@@ -24,7 +32,34 @@ export const FEATURES = [
 export const NAVIGATION = [
   { name: "Dashboard", href: "/user/dashboard", icon: Home },
   { name: "Analytics", href: "/user/analytics", icon: BarChart3 },
-  { name: "Notifications", href: "/user/notifications", icon: Bell },
-  { name: "Profile", href: "/user/profile", icon: User },
+  { name: "Message", href: "/user/message", icon: MessageCircleIcon },
   { name: "Settings", href: "/user/settings", icon: Settings },
+];
+
+export const CROPTYPES = [
+  "Corn",
+  "Wheat",
+  "Rice",
+  "Soybeans",
+  "Cotton",
+  "Tomatoes",
+  "Potatoes",
+  "Lettuce",
+  "Carrots",
+  "Onions",
+  "Peppers",
+  "Beans",
+];
+
+export const FARMCONCERNS = [
+  "Soil Moisture",
+  "Temperature",
+  "Humidity",
+  "Rainfall",
+  "Pressure",
+  "Frost Risk",
+  "Drought",
+  "Flooding",
+  "Pest Control",
+  "Disease Prevention",
 ];

@@ -1,4 +1,4 @@
-import Sidebar from "../../components/dashboard/Sidebar";
+import Sidebar from "../../components/Sidebar";
 
 export default function UserLayout({
   children,
@@ -8,9 +8,7 @@ export default function UserLayout({
   return (
     <div className="min-h-screen bg-gray-900 flex">
       <Sidebar />
-      <main className="flex-1 overflow-hidden">
-        {children}
-      </main>
+      <main className="ml-64 flex-1 overflow-hidden">{children}</main>
     </div>
   );
 }

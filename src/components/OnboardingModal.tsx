@@ -1,13 +1,17 @@
 "use client";
 import { useState } from "react";
-import { X, MapPin, Briefcase, Home, Users } from "lucide-react";
+import { X, MapPin, Home, Users } from "lucide-react";
+import { CROPTYPES, FARMCONCERNS } from "@/constant";
 
 interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProps) {
+export default function OnboardingModal({
+  isOpen,
+  onClose,
+}: OnboardingModalProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     farmLocation: "",
@@ -18,16 +22,6 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
     irrigationSystem: "",
   });
 
-  const cropTypes = [
-    "Corn", "Wheat", "Rice", "Soybeans", "Cotton", "Tomatoes",
-    "Potatoes", "Lettuce", "Carrots", "Onions", "Peppers", "Beans"
-  ];
-
-  const farmingConcerns = [
-    "Soil Moisture", "Temperature", "Humidity", "Rainfall", "Pressure",
-    "Frost Risk", "Drought", "Flooding", "Pest Control", "Disease Prevention"
-  ];
-
   if (!isOpen) return null;
 
   const handleNext = () => {
@@ -36,36 +30,35 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
   };
 
   const handleCropToggle = (crop: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       cropTypes: prev.cropTypes.includes(crop)
-        ? prev.cropTypes.filter(c => c !== crop)
-        : [...prev.cropTypes, crop]
+        ? prev.cropTypes.filter((c) => c !== crop)
+        : [...prev.cropTypes, crop],
     }));
   };
 
   const handleConcernToggle = (concern: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       farmingConcerns: prev.farmingConcerns.includes(concern)
-        ? prev.farmingConcerns.filter(c => c !== concern)
-        : [...prev.farmingConcerns, concern]
+        ? prev.farmingConcerns.filter((c) => c !== concern)
+        : [...prev.farmingConcerns, concern],
     }));
   };
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-scroll no-scrollbar flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <div>
             <h2 className="text-2xl font-bold text-white">Welcome to KLIMA</h2>
-            <p className="text-gray-400">Help us personalize your weather experience</p>
+            <p className="text-gray-400">
+              Help us personalize your weather experience
+            </p>
           </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white"
-          >
+          <button onClick={onClose} className="text-gray-400 hover:text-white">
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -91,8 +84,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
             <div className="space-y-6">
               <div className="text-center">
                 <MapPin className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Farm Details</h3>
-                <p className="text-gray-400">Tell us about your farm location and size</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Farm Details
+                </h3>
+                <p className="text-gray-400">
+                  Tell us about your farm location and size
+                </p>
               </div>
 
               <div className="space-y-4">
@@ -103,7 +100,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <input
                     type="text"
                     value={formData.farmLocation}
-                    onChange={(e) => setFormData(prev => ({ ...prev, farmLocation: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        farmLocation: e.target.value,
+                      }))
+                    }
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white placeholder-gray-400 focus:outline-none focus:border-green-400"
                     placeholder="e.g., Iowa, USA"
                   />
@@ -116,7 +118,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   <input
                     type="text"
                     value={formData.farmSize}
-                    onChange={(e) => setFormData(prev => ({ ...prev, farmSize: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        farmSize: e.target.value,
+                      }))
+                    }
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white placeholder-gray-400 focus:outline-none focus:border-green-400"
                     placeholder="e.g., 100 acres"
                   />
@@ -128,7 +135,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   </label>
                   <select
                     value={formData.experienceYears}
-                    onChange={(e) => setFormData(prev => ({ ...prev, experienceYears: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        experienceYears: e.target.value,
+                      }))
+                    }
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-green-400"
                   >
                     <option value="">Select experience level</option>
@@ -146,8 +158,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
             <div className="space-y-6">
               <div className="text-center">
                 <Users className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Crops & Irrigation</h3>
-                <p className="text-gray-400">What crops do you grow and how do you irrigate?</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Crops & Irrigation
+                </h3>
+                <p className="text-gray-400">
+                  What crops do you grow and how do you irrigate?
+                </p>
               </div>
 
               <div className="space-y-6">
@@ -156,7 +172,7 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                     Select your crops:
                   </label>
                   <div className="grid grid-cols-2 gap-3">
-                    {cropTypes.map((crop) => (
+                    {CROPTYPES.map((crop) => (
                       <button
                         key={crop}
                         onClick={() => handleCropToggle(crop)}
@@ -178,7 +194,12 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
                   </label>
                   <select
                     value={formData.irrigationSystem}
-                    onChange={(e) => setFormData(prev => ({ ...prev, irrigationSystem: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        irrigationSystem: e.target.value,
+                      }))
+                    }
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-green-400"
                   >
                     <option value="">Select irrigation type</option>
@@ -197,12 +218,17 @@ export default function OnboardingModal({ isOpen, onClose }: OnboardingModalProp
             <div className="space-y-6">
               <div className="text-center">
                 <Home className="w-12 h-12 text-green-400 mx-auto mb-4" />
-                <h3 className="text-xl font-bold text-white mb-2">Farming Priorities</h3>
-                <p className="text-gray-400">Which farming conditions are most critical for your operations?</p>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  Farming Priorities
+                </h3>
+                <p className="text-gray-400">
+                  Which farming conditions are most critical for your
+                  operations?
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
-                {farmingConcerns.map((concern) => (
+                {FARMCONCERNS.map((concern) => (
                   <button
                     key={concern}
                     onClick={() => handleConcernToggle(concern)}

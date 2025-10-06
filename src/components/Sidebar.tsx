@@ -1,28 +1,18 @@
 "use client";
 import { NAVIGATION } from "@/constant";
-import {
-  Cloud,
-  Home,
-  BarChart3,
-  Settings,
-  User,
-  LogOut,
-  Bell,
-} from "lucide-react";
+import { Cloud, User, LogOut } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Logo from "./Logo";
 
 export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+    <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col fixed h-full">
       {/* Logo */}
       <div className="p-6 border-b border-gray-700">
-        <div className="flex items-center space-x-2">
-          <Cloud className="w-8 h-8 text-green-400" />
-          <span className="text-xl font-bold text-white">KLIMA</span>
-        </div>
+        <Logo />
       </div>
 
       {/* Navigation */}

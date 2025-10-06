@@ -3,10 +3,10 @@ import { Mail, Lock, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import Logo from "../../components/Logo";
-import InputField from "../../components/auth/InputField";
-import GoogleButton from "../../components/auth/GoogleButton";
-import Divider from "../../components/auth/Divider";
-import AuthBackground from "../../components/auth/AuthBackground";
+import InputField from "../../components/InputField";
+import GoogleButton from "../../components/GoogleButton";
+import Divider from "../../components/Divider";
+import AuthBackground from "../../components/AuthBackground";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -101,7 +101,8 @@ export default function Login() {
               Smart Farming Intelligence
             </h2>
             <p className="text-lg lg:text-xl text-gray-200 mb-8">
-              AI-powered weather insights designed specifically for modern farmers and agricultural operations.
+              AI-powered weather insights designed specifically for modern
+              farmers and agricultural operations.
             </p>
             <div className="grid grid-cols-3 gap-6 text-sm">
               <div className="text-center">
