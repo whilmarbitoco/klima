@@ -19,3 +19,12 @@ export interface UserProfile {
   email: string;
   location: string;
 }
+
+export interface FarmDetails {
+  farmLocation: string;
+  farmSize: string;
+  yearsOfExperience: string;
+  crops: string[];
+  irrigationSystem: string;
+  farmingPriority: string[];
+}

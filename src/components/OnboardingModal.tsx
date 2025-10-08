@@ -2,10 +2,11 @@
 import { useState } from "react";
 import { X, MapPin, Home, Users } from "lucide-react";
 import { CROPTYPES, FARMCONCERNS } from "@/constant";
+import { FarmDetails } from "@/types";
 
 interface OnboardingModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (data: FarmDetails) => void;
 }
 
 export default function OnboardingModal({
@@ -13,12 +14,12 @@ export default function OnboardingModal({
   onClose,
 }: OnboardingModalProps) {
   const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FarmDetails>({
     farmLocation: "",
     farmSize: "",
-    cropTypes: [] as string[],
-    farmingConcerns: [] as string[],
-    experienceYears: "",
+    crops: [] as string[],
+    farmingPriority: [] as string[],
+    yearsOfExperience: "",
     irrigationSystem: "",
   });
 
@@ -26,26 +27,28 @@ export default function OnboardingModal({
 
   const handleNext = () => {
     if (step < 3) setStep(step + 1);
-    else onClose();
+    else onClose(formData);
   };
 
   const handleCropToggle = (crop: string) => {
     setFormData((prev) => ({
       ...prev,
-      cropTypes: prev.cropTypes.includes(crop)
-        ? prev.cropTypes.filter((c) => c !== crop)
-        : [...prev.cropTypes, crop],
+      crops: prev.crops.includes(crop)
+        ? prev.crops.filter((c) => c !== crop)
+        : [...prev.crops, crop],
     }));
   };
 
   const handleConcernToggle = (concern: string) => {
     setFormData((prev) => ({
       ...prev,
-      farmingConcerns: prev.farmingConcerns.includes(concern)
-        ? prev.farmingConcerns.filter((c) => c !== concern)
-        : [...prev.farmingConcerns, concern],
+      farmingPriority: prev.farmingPriority.includes(concern)
+        ? prev.farmingPriority.filter((c) => c !== concern)
+        : [...prev.farmingPriority, concern],
     }));
   };
+
+  const handleClick = () => onClose(formData);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -58,7 +61,10 @@ export default function OnboardingModal({
               Help us personalize your weather experience
             </p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-white">
+          <button
+            onClick={handleClick}
+            className="text-gray-400 hover:text-white"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
@@ -134,11 +140,11 @@ export default function OnboardingModal({
                     Years of Farming Experience
                   </label>
                   <select
-                    value={formData.experienceYears}
+                    value={formData.yearsOfExperience}
                     onChange={(e) =>
                       setFormData((prev) => ({
                         ...prev,
-                        experienceYears: e.target.value,
+                        yearsOfExperience: e.target.value,
                       }))
                     }
                     className="w-full bg-gray-700 border border-gray-600 rounded-lg py-3 px-4 text-white focus:outline-none focus:border-green-400"
@@ -177,7 +183,7 @@ export default function OnboardingModal({
                         key={crop}
                         onClick={() => handleCropToggle(crop)}
                         className={`p-3 rounded-lg text-sm font-medium transition-colors ${
-                          formData.cropTypes.includes(crop)
+                          formData.crops.includes(crop)
                             ? "bg-green-600 text-white"
                             : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                         }`}
@@ -233,7 +239,7 @@ export default function OnboardingModal({
                     key={concern}
                     onClick={() => handleConcernToggle(concern)}
                     className={`p-3 rounded-lg text-sm font-medium transition-colors ${
-                      formData.farmingConcerns.includes(concern)
+                      formData.farmingPriority.includes(concern)
                         ? "bg-green-600 text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}

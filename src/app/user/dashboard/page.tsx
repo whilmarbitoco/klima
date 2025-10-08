@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 import {
   Thermometer,
   Droplets,
@@ -13,9 +14,13 @@ import OnboardingModal from "@/components/OnboardingModal";
 import ActivityCard from "@/components/ActivityCard";
 import PageLayout from "@/components/PageLayout";
 import MetricsGrid from "@/components/MetricsGrid";
+import { createFarmDetails, getUserFarmDetails } from "@/sevice/userService";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { FarmDetails } from "@/types";
 
 export default function DashboardPage() {
-  const [showOnboarding, setShowOnboarding] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [currentUser, loading] = useCurrentUser();
 
   const metrics = [
     {
@@ -81,6 +86,29 @@ export default function DashboardPage() {
     },
   ];
 
+  const onClose = async (data: FarmDetails) => {
+    setShowOnboarding(false);
+
+    if (currentUser == null) return;
+
+    await createFarmDetails(currentUser.uid, data);
+  };
+
+  useEffect(() => {
+    if (loading) return;
+
+    async function checkFarmDetails() {
+      if (!loading && currentUser != null) {
+        const userId = currentUser?.uid;
+        const farmDetails = (await getUserFarmDetails(userId)) != null;
+        setShowOnboarding(!farmDetails);
+      } else {
+        setShowOnboarding(true);
+      }
+    }
+    checkFarmDetails();
+  }, [currentUser, loading]);
+
   return (
     <PageLayout
       title="Dashboard"
@@ -113,10 +141,7 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <OnboardingModal
-        isOpen={showOnboarding}
-        onClose={() => setShowOnboarding(false)}
-      />
+      <OnboardingModal isOpen={showOnboarding} onClose={onClose} />
     </PageLayout>
   );
 }

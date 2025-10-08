@@ -1,10 +1,20 @@
-const generateRandomId = (length: number): string => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+export function generateRandomId(base: string, length: number = 32): string {
+  const randomBytes = new Uint8Array(16);
+  crypto.getRandomValues(randomBytes);
+
+  const randomPart = Array.from(randomBytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+
+  const input = `${base}-${randomPart}-${Date.now()}`;
+
+  let hash: number = Date.now();
+  for (let i = 0; i < input.length; i++) {
+    hash ^= input.charCodeAt(i);
+    hash = Math.imul(hash, 16777619);
   }
-  return result;
-};
+
+  const final = (hash >>> 0).toString(16) + randomPart;
+
+  return final.slice(0, length);
+}
