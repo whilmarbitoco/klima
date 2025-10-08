@@ -1,6 +1,9 @@
 import Features from "@/components/Features";
 import Hero from "@/components/Hero";
 import Nav from "@/components/Nav";
+import HowItWorks from "@/components/HowItWorks";
+import ProductShowcase from "@/components/ProductShowcase";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -9,6 +12,9 @@ export default function Home() {
         <Nav />
         <Hero />
         <Features />
+        <HowItWorks />
+        <ProductShowcase />
+        <Footer />
       </div>
     </div>
   );
