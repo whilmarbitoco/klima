@@ -11,6 +11,7 @@ export interface Weather {
   humidity: number;
   rainfall: number;
   soilMoisture: number;
+  pressure: number;
 }
 
 export interface UserProfile {
@@ -26,5 +27,12 @@ export interface FarmDetails {
   yearsOfExperience: string;
   crops: string[];
   irrigationSystem: string;
-  farmingPriority: string[];
+  farmingConcerns: string[];
+}
+
+export interface Message {
+  id: number;
+  text: string;
+  isBot?: boolean;
+  timestamp: Date;
 }

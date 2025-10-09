@@ -3,22 +3,20 @@ import { isParementersMissing } from "@/lib/utils";
 import { FarmDetails, Weather } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
-const apiKey = process.env.GEMINI_API_KEY;
+const apiKey = process.env.NEXT_GEMINI_API_KEY;
 const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
 
 interface ChatRequest {
   message: string;
-  username: string;
   farm: FarmDetails;
   weather: Weather;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { message, username, farm, weather }: ChatRequest =
-      await request.json();
+    const { message, farm, weather }: ChatRequest = await request.json();
 
-    if (isParementersMissing([message, username, farm, weather])) {
+    if (isParementersMissing([message, farm, weather])) {
       return NextResponse.json(
         { error: "Missing parameters" },
         { status: 400 }
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const PROMPT = createChatPrompt(username, farm, weather);
+    const PROMPT = createChatPrompt(farm, weather);
 
     const requestBody = {
       contents: [

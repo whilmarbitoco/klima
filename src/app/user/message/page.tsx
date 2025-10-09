@@ -4,15 +4,24 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import VoiceSection from "@/components/VoiceSection";
 import ChatSection from "@/components/ChatSection";
+import { Message } from "@/types";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { farmDetails, weatherData } from "@/constant";
+import { TTSService } from "@/lib/tts";
 
 export default function VoiceChat() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
-  const [messages, setMessages] = useState<{ id: number; text: string; isBot?: boolean }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [mode, setMode] = useState<"voice" | "text">("voice");
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const ttsRef = useRef<TTSService | null>(null);
 
-  // 🎙️ Speech recognition logic
+  useEffect(() => {
+    ttsRef.current = new TTSService();
+    return () => ttsRef.current?.stop();
+  }, []);
+
   useEffect(() => {
     const SpeechRecognitionConstructor =
       (window as any).SpeechRecognition ||
@@ -41,7 +50,6 @@ export default function VoiceChat() {
     return () => recognition.stop();
   }, [isListening]);
 
-  // 🎬 Smooth GSAP transition when mode changes
   useEffect(() => {
     if (containerRef.current) {
       gsap.fromTo(
@@ -54,33 +62,76 @@ export default function VoiceChat() {
 
   const handleSend = () => {
     if (!transcript.trim()) return;
-    const userMessage = { id: Date.now(), text: transcript, isBot: false };
+
+    const userMessage: Message = {
+      id: Date.now(),
+      text: transcript,
+      isBot: false,
+      timestamp: new Date(),
+    };
     setMessages((prev) => [...prev, userMessage]);
     setTranscript("");
-    
-    // Simulate AI response
-    setTimeout(() => {
-      const botResponse = {
-        id: Date.now() + 1,
-        text: "Thanks for your message! I'm here to help with your farming needs. What would you like to know about weather, crops, or irrigation?",
-        isBot: true
+
+    fetchBotResponse(transcript);
+  };
+
+  const fetchBotResponse = async (userMessage: string) => {
+    try {
+      const requestBody = {
+        message: userMessage,
+        username: "John",
+        farm: farmDetails,
+        weather: weatherData,
       };
-      setMessages((prev) => [...prev, botResponse]);
-    }, 1000);
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorMessage: Message = {
+          id: Date.now() + 1,
+          text: "Error fetching response. Please try again.",
+          isBot: true,
+          timestamp: new Date(),
+        };
+        setMessages((prev) => [...prev, errorMessage]);
+        return;
+      }
+
+      const data = await response.json();
+
+      const botMessage: Message = {
+        id: Date.now() + 1,
+        text: data.message,
+        isBot: true,
+        timestamp: new Date(),
+      };
+
+      setMessages((prev) => [...prev, botMessage]);
+      
+      if (mode === "voice" && ttsRef.current) {
+        ttsRef.current.speak(data.message);
+      }
+    } catch (error) {
+      console.error("Error fetching bot response:", error);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-black text-white p-4 sm:p-6 flex items-center justify-center">
-      <div
-        ref={containerRef}
-        className="w-full max-w-6xl"
-      >
+      <div ref={containerRef} className="w-full max-w-6xl">
         {mode === "voice" ? (
           <div className="flex flex-col items-center max-w-md mx-auto">
             <VoiceSection
               isListening={isListening}
               transcript={transcript}
               setIsListening={setIsListening}
+              handleSend={handleSend}
               setMode={setMode}
             />
           </div>

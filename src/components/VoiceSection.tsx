@@ -7,6 +7,7 @@ import gsap from "gsap";
 interface VoiceSectionProps {
   isListening: boolean;
   transcript: string;
+  handleSend: () => void;
   setIsListening: React.Dispatch<React.SetStateAction<boolean>>;
   setMode: React.Dispatch<React.SetStateAction<"voice" | "text">>;
 }
@@ -15,9 +16,17 @@ export default function VoiceSection({
   isListening,
   transcript,
   setIsListening,
+  handleSend,
   setMode,
 }: VoiceSectionProps) {
   const micRef = useRef<HTMLButtonElement | null>(null);
+
+  const handleMicClick = () => {
+    setIsListening((prev) => !prev);
+    console.log(isListening);
+
+    if (isListening) handleSend();
+  };
 
   useEffect(() => {
     if (micRef.current) {
@@ -45,7 +54,7 @@ export default function VoiceSection({
     <>
       <button
         ref={micRef}
-        onClick={() => setIsListening((prev) => !prev)}
+        onClick={handleMicClick}
         className="p-10 rounded-full bg-emerald-600 transition focus:outline-none"
       >
         {isListening ? <MicOff size={48} /> : <Mic size={48} />}
