@@ -22,3 +22,27 @@ export function generateRandomId(base: string, length: number = 32): string {
 export const isParementersMissing = (anything: any[]): boolean => {
   return anything.some((item) => item === undefined || item === null);
 };
+
+export const moistureAverage = (data: number[]): number => {
+  if (data.length === 0) return 0;
+  const sum = data.reduce((acc, val) => acc + val, 0);
+  return parseFloat((sum / data.length).toFixed(2));
+};
+
+export const isOptimalTemperature = (temp: number): boolean => {
+  return temp >= 20 && temp <= 30;
+};
+
+export const isOptimalSoilMoisture = (moisture: number): boolean => {
+  return moisture >= 20 && moisture <= 60;
+};
+
+export const isOptimalHumidity = (
+  humidity: number
+): "Low" | "Optimal" | "High" => {
+  return humidity < 30 ? "Low" : humidity > 60 ? "High" : "Optimal";
+};
+
+export const isOptimalPressure = (pressure: number): boolean => {
+  return pressure >= 1010 && pressure <= 1025;
+};

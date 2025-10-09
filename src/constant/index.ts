@@ -1,11 +1,15 @@
-import { FarmDetails, Weather } from "@/types";
+import { Device, FarmDetails, Weather } from "@/types";
 import {
   BarChart3,
   Bell,
+  Droplets,
+  Gauge,
   Home,
   icons,
   MessageCircleIcon,
   Settings,
+  Sprout,
+  Thermometer,
   User,
 } from "lucide-react";
 
@@ -65,6 +69,37 @@ export const FARMCONCERNS = [
   "Disease Prevention",
 ];
 
+export const METRICS = [
+  {
+    label: "Temperature",
+    value: "27.3°C",
+    status: "Optimal",
+    icon: Thermometer,
+    color: "text-orange-400",
+  },
+  {
+    label: "Soil Moisture",
+    value: "72.7%",
+    status: "Good",
+    icon: Sprout,
+    color: "text-green-400",
+  },
+  {
+    label: "Humidity",
+    value: "82.4%",
+    status: "High",
+    icon: Droplets,
+    color: "text-blue-400",
+  },
+  {
+    label: "Pressure",
+    value: "1010hPa",
+    status: "Stable",
+    icon: Gauge,
+    color: "text-purple-400",
+  },
+];
+
 export const weatherData: Weather[] = [
   {
     time: "time 1",
@@ -108,3 +143,11 @@ export const farmDetails: FarmDetails = {
   irrigationSystem: "Surface Irrigation",
   farmingConcerns: ["Soil Moisture", "Temperature", "Humidity", "Rainfall"],
 };
+
+export const devices: Device[] = [
+  {
+    name: "Field Sensor A1",
+    deviceId: "FS-A1001-WB-2025",
+    status: "offline",
+  },
+];

@@ -1,26 +1,32 @@
 "use client";
+
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { getDevices } from "@/sevice/deviceService";
+import { Device } from "@/types";
 import { Wifi } from "lucide-react";
 import { useRouter } from "next/navigation";
-
-interface Device {
-  id: number;
-  name: string;
-  deviceId: string;
-  status: "online" | "offline";
-}
+import { useEffect, useState } from "react";
 
 export default function AnalyticsPage() {
   const router = useRouter();
-
-  const devices: Device[] = [
-    { id: 1, name: "Weather Station 1", deviceId: "WS001", status: "online" },
-    { id: 2, name: "Soil Sensor A", deviceId: "SS002", status: "offline" },
-    { id: 3, name: "Field Monitor B", deviceId: "FM003", status: "online" },
-  ];
+  const [devices, setDevices] = useState<Device[]>([]);
+  const [currentUser, loading] = useCurrentUser();
 
   const handleDeviceSelect = (device: Device) => {
     router.push(`/user/analytics/${device.deviceId}`);
   };
+
+  useEffect(() => {
+    async function fetchDevices() {
+      if (loading || !currentUser) return;
+
+      const devicesData: Device[] = await getDevices(currentUser?.uid);
+
+      setDevices(devicesData);
+      console.log(devicesData);
+    }
+    fetchDevices();
+  }, [currentUser, loading]);
 
   return (
     <div className="p-4 lg:p-6 space-y-6 overflow-x-hidden">
@@ -36,7 +42,7 @@ export default function AnalyticsPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
           {devices.map((device) => (
             <button
-              key={device.id}
+              key={device.deviceId}
               onClick={() => handleDeviceSelect(device)}
               className="bg-gray-700/50 hover:bg-gray-700 border border-gray-600 rounded-lg p-4 transition-colors text-left"
             >

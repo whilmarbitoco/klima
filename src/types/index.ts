@@ -1,8 +1,9 @@
+export type DeviceStatus = "online" | "offline";
+
 export interface Device {
-  id: number;
   name: string;
   deviceId: string;
-  status: "online" | "offline";
+  status: DeviceStatus;
 }
 
 export interface Weather {
@@ -12,6 +13,7 @@ export interface Weather {
   rainfall: number;
   soilMoisture: number;
   pressure: number;
+  timestamp?: number;
 }
 
 export interface UserProfile {
@@ -35,4 +37,8 @@ export interface Message {
   text: string;
   isBot?: boolean;
   timestamp: Date;
+}
+
+export interface SoilAnalysis {
+  status: "below" | "optimal" | "above";
 }

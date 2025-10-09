@@ -2,7 +2,7 @@ import { Device } from "@/types";
 import { Wifi, RefreshCcw } from "lucide-react";
 
 interface DeviceStatusBarProps {
-  device: Device;
+  device: Device | null;
   onRefresh?: () => void;
 }
 
@@ -15,19 +15,19 @@ export default function DeviceStatusBar({
       <div className="flex items-center space-x-3">
         <Wifi className="w-5 h-5 text-green-400" />
         <div>
-          <h3 className="font-medium text-white">{device.name}</h3>
-          <p className="text-sm text-gray-400">ID: {device.deviceId}</p>
+          <h3 className="font-medium text-white">{device?.name}</h3>
+          <p className="text-sm text-gray-400">ID: {device?.deviceId}</p>
         </div>
       </div>
       <div className="flex items-center space-x-4">
         <span
           className={`text-xs px-3 py-1 rounded-full ${
-            device.status === "online"
+            device?.status === "online"
               ? "bg-green-600/20 text-green-400 border border-green-600/30"
               : "bg-red-600/20 text-red-400 border border-red-600/30"
           }`}
         >
-          {device.status}
+          {device?.status}
         </span>
         {onRefresh && (
           <button

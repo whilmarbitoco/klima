@@ -1,13 +1,12 @@
 "use client";
 import {
-  Thermometer,
-  Droplets,
   CloudRain,
   Sprout,
   TrendingUp,
   AlertTriangle,
   Activity,
-  Gauge,
+  RefreshCw,
+  InfoIcon,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
@@ -24,117 +23,83 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Device, Weather } from "@/types";
+import { useEffect, useState } from "react";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { getDeviceById } from "@/sevice/deviceService";
+import { getWeatherDataByDevice } from "@/sevice/weatherService";
 
 export default function DeviceAnalytics() {
   const params = useParams();
+  const deviceId = params.deviceId as string;
 
-  const devices: Device[] = [
-    { id: 1, name: "Weather Station 1", deviceId: "WS001", status: "online" },
-    { id: 2, name: "Soil Sensor A", deviceId: "SS002", status: "offline" },
-    { id: 3, name: "Field Monitor B", deviceId: "FM003", status: "online" },
-  ];
+  const [currentUser, loading] = useCurrentUser();
+  const [device, setDevice] = useState<Device | null>(null);
+  const [weather, setWeather] = useState<Weather[] | null>(null);
+  const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
 
-  const currentDevice = devices.find((d) => d.deviceId === params.deviceId);
-  const selectedDevice = currentDevice || devices[0];
+  useEffect(() => {
+    async function fetchData() {
+      if (loading || !currentUser) return;
 
-  const weatherData: Weather[] = [
-    {
-      time: "Today",
-      temp: 27.3,
-      humidity: 82,
-      rainfall: 0,
-      soilMoisture: 72.7,
-    },
-    {
-      time: "Day 2",
-      temp: 28.1,
-      humidity: 78,
-      rainfall: 5,
-      soilMoisture: 69.0,
-    },
-    {
-      time: "Day 3",
-      temp: 26.5,
-      humidity: 85,
-      rainfall: 15,
-      soilMoisture: 65.8,
-    },
-    {
-      time: "Day 4",
-      temp: 25.8,
-      humidity: 88,
-      rainfall: 25,
-      soilMoisture: 62.5,
-    },
-  ];
+      const currentDevice = await getDeviceById(currentUser.uid, deviceId);
+      setDevice(currentDevice);
 
-  const metrics = [
-    {
-      label: "Temperature",
-      value: "27.3°C",
-      status: "Optimal",
-      icon: Thermometer,
-      color: "text-orange-400",
-    },
-    {
-      label: "Soil Moisture",
-      value: "72.7%",
-      status: "Good",
-      icon: Sprout,
-      color: "text-green-400",
-    },
-    {
-      label: "Humidity",
-      value: "82.4%",
-      status: "High",
-      icon: Droplets,
-      color: "text-blue-400",
-    },
-    {
-      label: "Pressure",
-      value: "1010hPa",
-      status: "Stable",
-      icon: Gauge,
-      color: "text-purple-400",
-    },
-  ];
+      const weatherData = await getWeatherDataByDevice(deviceId);
+      setWeather(weatherData);
+
+      if (weatherData && weatherData.length > 0) {
+        setCurrentWeather(weatherData[0]);
+      }
+    }
+    fetchData();
+  }, [currentUser, loading, deviceId]);
 
   return (
     <PageLayout
       title="Analytics & Forecast"
       description="AI-powered weather forecasting and analysis"
     >
-      <DeviceStatusBar device={selectedDevice} />
+      <DeviceStatusBar device={device} />
 
-      <MetricsGrid metrics={metrics} />
-
+      {currentWeather && (
+        <MetricsGrid
+          temperature={currentWeather?.temp}
+          humidity={currentWeather.humidity}
+          pressure={currentWeather.pressure}
+          soilMoisture={currentWeather.soilMoisture}
+        />
+      )}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
+          {weather && Array.isArray(weather) && weather.length > 0 && (
+            <WeatherChart
+              title="Weather Trends"
+              subtitle="4-day forecast analysis"
+              icon={Activity}
+              data={weather}
+              type="line"
+              dataKeys={[
+                { key: "temp", color: "#F97316", name: "Temperature (°C)" },
+                { key: "humidity", color: "#3B82F6", name: "Humidity (%)" },
+              ]}
+              height={320}
+            />
+          )}
+        </div>
+
+        {weather && Array.isArray(weather) && weather.length > 0 && (
           <WeatherChart
-            title="Weather Trends"
-            subtitle="4-day forecast analysis"
-            icon={Activity}
-            data={weatherData}
-            type="line"
+            title="Rainfall"
+            subtitle="Expected precipitation"
+            icon={CloudRain}
+            data={weather}
+            type="bar"
             dataKeys={[
-              { key: "temp", color: "#F97316", name: "Temperature (°C)" },
-              { key: "humidity", color: "#3B82F6", name: "Humidity (%)" },
+              { key: "rainfall", color: "#FFB8D9", name: "Rainfall (mm)" },
             ]}
             height={320}
           />
-        </div>
-
-        <WeatherChart
-          title="Rainfall"
-          subtitle="Expected precipitation"
-          icon={CloudRain}
-          data={weatherData}
-          type="bar"
-          dataKeys={[
-            { key: "rainfall", color: "#06B6D4", name: "Rainfall (mm)" },
-          ]}
-          height={320}
-        />
+        )}
       </div>
 
       <div className="bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
@@ -152,32 +117,34 @@ export default function DeviceAnalytics() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <div className="h-64">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={weatherData}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
-                  <YAxis stroke="#9CA3AF" fontSize={12} />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: "#1F2937",
-                      border: "1px solid #374151",
-                      borderRadius: "8px",
-                      color: "#F9FAFB",
-                    }}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="soilMoisture"
-                    stroke="#10B981"
-                    fill="#10B981"
-                    fillOpacity={0.3}
-                    strokeWidth={3}
-                    name="Soil Moisture (%)"
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            {weather && Array.isArray(weather) && weather.length > 0 && (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={weather}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                    <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
+                    <YAxis stroke="#9CA3AF" fontSize={12} />
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: "#1F2937",
+                        border: "1px solid #374151",
+                        borderRadius: "8px",
+                        color: "#F9FAFB",
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="soilMoisture"
+                      stroke="#10B981"
+                      fill="#10B981"
+                      fillOpacity={0.3}
+                      strokeWidth={3}
+                      name="Soil Moisture (%)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </div>
 
           <div className="space-y-4">
@@ -213,31 +180,26 @@ export default function DeviceAnalytics() {
       </div>
 
       <div className="bg-gradient-to-br from-green-600/10 to-blue-600/10 backdrop-blur-sm border border-green-600/20 rounded-xl p-6">
-        <div className="flex items-center space-x-3 mb-6">
-          <TrendingUp className="w-6 h-6 text-green-400" />
-          <h3 className="text-xl font-bold text-white">AI Recommendations</h3>
+        <div className="flex items-center justify-between space-x-3 mb-6">
+          <div>
+            <TrendingUp className="w-6 h-6 text-green-400" />
+            <h3 className="text-xl font-bold text-white">AI Recommendations</h3>
+          </div>
+
+          <button className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer">
+            <RefreshCw className="w-4 h-4 text-gray-400 hover:text-gray-200" />
+          </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div className="p-4 bg-blue-600/10 rounded-lg border border-blue-600/20">
             <h4 className="font-medium text-white mb-2 flex items-center">
-              <Droplets className="w-4 h-4 mr-2 text-blue-400" />
+              <InfoIcon className="w-4 h-4 mr-2 text-blue-400" />
               Humidity Management
             </h4>
             <p className="text-sm text-gray-300">
               High humidity detected. Consider fungicide application within 48
               hours to prevent crop disease.
-            </p>
-          </div>
-
-          <div className="p-4 bg-orange-600/10 rounded-lg border border-orange-600/20">
-            <h4 className="font-medium text-white mb-2 flex items-center">
-              <Sprout className="w-4 h-4 mr-2 text-orange-400" />
-              Irrigation Schedule
-            </h4>
-            <p className="text-sm text-gray-300">
-              Soil moisture declining. Schedule irrigation for Day 2-3 with 15mm
-              water volume recommended.
             </p>
           </div>
         </div>

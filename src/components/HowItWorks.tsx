@@ -53,7 +53,7 @@ export default function HowItWorks() {
                 <div className="text-center">
                   <div className="w-16 h-16 bg-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 relative">
                     <Icon className="w-8 h-8 text-white" />
-                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                    <div className="absolute -top-2 -right-2 w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold">
                       {index + 1}
                     </div>
                   </div>
