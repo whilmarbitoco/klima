@@ -31,7 +31,7 @@ export default function MetricsGrid({
           )}
         </div>
         <div className="text-2xl font-bold text-white mb-1">
-          {Math.floor(temperature)}°C
+          {temperature.toFixed(1)}°C
         </div>
         <div className="text-sm text-gray-400">Temperature</div>
       </div>
@@ -46,7 +46,7 @@ export default function MetricsGrid({
           )}
         </div>
         <div className="text-2xl font-bold text-white mb-1">
-          {Math.floor(soilMoisture)}%
+          {soilMoisture.toFixed(1)}%
         </div>
         <div className="text-sm text-gray-400">Soil Moisture</div>
       </div>
@@ -66,7 +66,7 @@ export default function MetricsGrid({
           })()}
         </div>
         <div className="text-2xl font-bold text-white mb-1">
-          {Math.floor(humidity)}%
+          {humidity.toFixed(1)}%
         </div>
         <div className="text-sm text-gray-400">Humidity</div>
       </div>

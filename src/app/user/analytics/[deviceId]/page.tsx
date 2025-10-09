@@ -27,6 +27,9 @@ import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getDeviceById } from "@/sevice/deviceService";
 import { getWeatherDataByDevice } from "@/sevice/weatherService";
+import { moistureAverage } from "@/lib/utils";
+import MoistureAnalysis from "@/components/MoistureAnalysis";
+import { weatherData } from "@/constant";
 
 export default function DeviceAnalytics() {
   const params = useParams();
@@ -147,35 +150,13 @@ export default function DeviceAnalytics() {
             )}
           </div>
 
-          <div className="space-y-4">
-            <div className="p-4 bg-red-600/10 rounded-lg border border-red-600/20">
-              <div className="flex items-center space-x-2 mb-2">
-                <AlertTriangle className="w-4 h-4 text-red-400" />
-                <span className="text-red-400 font-medium text-sm">
-                  Critical Alert
-                </span>
-              </div>
-              <p className="text-gray-300 text-sm">
-                Moisture dropping below optimal. Irrigation recommended within
-                48 hours.
-              </p>
-            </div>
-
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Current Level:</span>
-                <span className="text-green-400 font-medium">72.7%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Optimal Range:</span>
-                <span className="text-gray-300">65-80%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Predicted Low:</span>
-                <span className="text-red-400 font-medium">62.5%</span>
-              </div>
-            </div>
-          </div>
+          {weatherData &&
+            Array.isArray(weatherData) &&
+            weatherData.length > 0 && (
+              <MoistureAnalysis
+                moisture={weatherData.map((w) => w.soilMoisture)}
+              />
+            )}
         </div>
       </div>
 
