@@ -18,3 +18,7 @@ export function generateRandomId(base: string, length: number = 32): string {
 
   return final.slice(0, length);
 }
+
+export const isParementersMissing = (anything: any[]): boolean => {
+  return anything.some((item) => item === undefined || item === null);
+};
