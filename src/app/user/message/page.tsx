@@ -61,6 +61,7 @@ export default function VoiceChat() {
   }, [mode]);
 
   const handleSend = () => {
+    ttsRef.current?.stop();
     if (!transcript.trim()) return;
 
     const userMessage: Message = {
@@ -113,7 +114,7 @@ export default function VoiceChat() {
       };
 
       setMessages((prev) => [...prev, botMessage]);
-      
+
       if (mode === "voice" && ttsRef.current) {
         ttsRef.current.speak(data.message);
       }
