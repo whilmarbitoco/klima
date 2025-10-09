@@ -42,3 +42,8 @@ export interface Message {
 export interface SoilAnalysis {
   status: "below" | "optimal" | "above";
 }
+
+export interface Recommendation {
+  title: string;
+  description: string;
+}

@@ -72,6 +72,22 @@ export default function DeviceAnalytics() {
           soilMoisture={currentWeather.soilMoisture}
         />
       )}
+
+      <div className="text-green-50 flex items-start lg:items-center justify-between pt-5">
+        <div>
+          <h1 className="text-xl font-bold">
+            AI-powered 4 Day Weather Prediction
+          </h1>
+          <p className="text-gray-400 mt-1 text-xs sm:text-base">
+            Get precise, AI-driven forecasts to help you plan smarter and farm
+            better.
+          </p>
+        </div>
+        <button className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer">
+          <RefreshCw className="w-4 h-4 text-gray-400 hover:text-gray-200" />
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
           {weather && Array.isArray(weather) && weather.length > 0 && (
