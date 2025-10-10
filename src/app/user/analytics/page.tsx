@@ -2,6 +2,7 @@
 
 import DeviceCard from "@/components/DeviceCard";
 import PageLayout from "@/components/PageLayout";
+import Suspender from "@/components/Suspender";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getDevices } from "@/sevice/deviceService";
 import { Device } from "@/types";
@@ -45,15 +46,17 @@ export default function AnalyticsPage() {
             Choose a device to view its analytics and predictions
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
-            {devices.map((device) => (
-              <DeviceCard
-                key={device.deviceId}
-                device={device}
-                handleDeviceSelect={handleDeviceSelect}
-              />
-            ))}
-          </div>
+          <Suspender condition={devices.length > 0}>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-4xl mx-auto">
+              {devices.map((device) => (
+                <DeviceCard
+                  key={device.deviceId}
+                  device={device}
+                  handleDeviceSelect={handleDeviceSelect}
+                />
+              ))}
+            </div>
+          </Suspender>
         </div>
       </div>
     </PageLayout>

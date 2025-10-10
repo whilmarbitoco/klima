@@ -70,3 +70,7 @@ export const cleanAIResponse = (raw: string): string => {
 
   return cleaned;
 };
+
+export const sleep = (time: number) => {
+  return new Promise((resolve) => setTimeout(resolve, time));
+};

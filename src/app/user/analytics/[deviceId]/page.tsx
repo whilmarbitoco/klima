@@ -23,14 +23,20 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Device, Recommendation, Weather } from "@/types";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getDeviceById } from "@/sevice/deviceService";
+import {
+  addRecommendations,
+  getDeviceById,
+  getRecommendations,
+} from "@/sevice/deviceService";
 import { getWeatherDataByDevice } from "@/sevice/weatherService";
-import { cleanAIResponse, moistureAverage } from "@/lib/utils";
+import { cleanAIResponse, moistureAverage, sleep } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
 import { weatherData } from "@/constant";
 import RecommendationCard from "@/components/RecommendationCard";
+import { Spinner } from "@/components/Spinner";
+import Suspender from "@/components/Suspender";
 
 export default function DeviceAnalytics() {
   const params = useParams();
@@ -38,13 +44,12 @@ export default function DeviceAnalytics() {
 
   const [currentUser, loading] = useCurrentUser();
   const [device, setDevice] = useState<Device | null>(null);
-  const [weather, setWeather] = useState<Weather[] | null>(null);
+  const [weather, setWeather] = useState<Weather[]>([]);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
-  const [recommendations, setrecommendations] = useState<
-    Recommendation[] | null
-  >(null);
+  const [recommendations, setrecommendations] = useState<Recommendation[]>([]);
 
   const refreshRecommendation = async () => {
+    setrecommendations([]);
     const requestBody = {
       weather: weather,
     };
@@ -68,49 +73,53 @@ export default function DeviceAnalytics() {
       cleanAIResponse(data.message)
     ) as Recommendation[];
     setrecommendations(formatted);
+    await addRecommendations(deviceId, formatted);
   };
 
   useEffect(() => {
     async function fetchData() {
+      sleep(90000);
       if (loading || !currentUser) return;
 
+      setTimeout(() => {}, 20000);
       const currentDevice = await getDeviceById(currentUser.uid, deviceId);
       setDevice(currentDevice);
 
       const weatherData = await getWeatherDataByDevice(deviceId);
       setWeather(weatherData);
 
+      const currentRecommendations = await getRecommendations(deviceId);
+      setrecommendations(currentRecommendations);
+
       if (weatherData && weatherData.length > 0) {
         setCurrentWeather(weatherData[0]);
-      }
-
-      console.log(recommendations);
-      if (recommendations == null) {
-        refreshRecommendation();
       }
     }
     fetchData();
   }, [currentUser, loading, deviceId]);
 
-  useEffect(() => {
-    if (weather == null) return;
-    refreshRecommendation();
-  }, [weather]);
   return (
     <PageLayout
       title="Analytics & Forecast"
       description="AI-powered weather forecasting and analysis"
     >
-      <DeviceStatusBar device={device} />
+      <Suspender condition={device != null}>
+        <DeviceStatusBar device={device} />
+      </Suspender>
 
-      {currentWeather && (
-        <MetricsGrid
-          temperature={currentWeather?.temp}
-          humidity={currentWeather.humidity}
-          pressure={currentWeather.pressure}
-          soilMoisture={currentWeather.soilMoisture}
-        />
-      )}
+      <Suspender
+        condition={currentWeather != null}
+        header="Loading Analytics..."
+      >
+        {currentWeather && (
+          <MetricsGrid
+            temperature={currentWeather.temp}
+            humidity={currentWeather.humidity}
+            pressure={currentWeather.pressure}
+            soilMoisture={currentWeather.soilMoisture}
+          />
+        )}
+      </Suspender>
 
       <div className="text-green-50 flex items-start lg:items-center justify-between pt-5">
         <div>
@@ -129,7 +138,10 @@ export default function DeviceAnalytics() {
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
-          {weather && Array.isArray(weather) && weather.length > 0 && (
+          <Suspender
+            condition={weather.length > 0}
+            header="Loading Weather Trend..."
+          >
             <WeatherChart
               title="Weather Trends"
               subtitle="4-day forecast analysis"
@@ -142,10 +154,13 @@ export default function DeviceAnalytics() {
               ]}
               height={320}
             />
-          )}
+          </Suspender>
         </div>
 
-        {weather && Array.isArray(weather) && weather.length > 0 && (
+        <Suspender
+          condition={weather.length > 0}
+          header="Loading Rainfall Data..."
+        >
           <WeatherChart
             title="Rainfall"
             subtitle="Expected precipitation"
@@ -157,7 +172,7 @@ export default function DeviceAnalytics() {
             ]}
             height={320}
           />
-        )}
+        </Suspender>
       </div>
 
       <div className="bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
@@ -175,7 +190,7 @@ export default function DeviceAnalytics() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            {weather && Array.isArray(weather) && weather.length > 0 && (
+            <Suspender condition={weather.length > 0}>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={weather}>
@@ -202,7 +217,7 @@ export default function DeviceAnalytics() {
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
-            )}
+            </Suspender>
           </div>
 
           {weatherData &&
@@ -230,9 +245,9 @@ export default function DeviceAnalytics() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {recommendations &&
-            recommendations.map(
+        <Suspender condition={recommendations?.length > 0}>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {recommendations.map(
               (recommendation: Recommendation, index: number) => (
                 <RecommendationCard
                   key={index}
@@ -241,7 +256,8 @@ export default function DeviceAnalytics() {
                 />
               )
             )}
-        </div>
+          </div>
+        </Suspender>
       </div>
     </PageLayout>
   );

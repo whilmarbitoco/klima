@@ -5,11 +5,11 @@ import { snap } from "gsap";
 
 export const getWeatherDataByDevice = async (
   deviceId: string
-): Promise<Weather[] | null> => {
+): Promise<Weather[]> => {
   const weatherRef = ref(db, `weather/${deviceId}`);
   const snapshot = await get(weatherRef);
 
-  if (!snapshot.exists()) return null;
+  if (!snapshot.exists()) return [];
 
   const weatherData: Weather[] = [];
 
