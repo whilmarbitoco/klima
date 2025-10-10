@@ -3,7 +3,13 @@ export type DeviceStatus = "online" | "offline";
 export interface Device {
   name: string;
   deviceId: string;
-  status: DeviceStatus;
+  status?: DeviceStatus;
+}
+
+export interface PersonalInfo {
+  firstname: string;
+  lastname: string;
+  location: string;
 }
 
 export interface Weather {
