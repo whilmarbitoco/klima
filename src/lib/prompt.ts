@@ -30,3 +30,38 @@ ${JSON.stringify(weather, null, 2)}
 Now provide your response below as plain, spoken-style text:
 `;
 };
+export const createRecommendationPrompt = (weather: Weather): string => {
+  return `
+Your task:
+Based on the following weather data, recommend at least three (3) farming actions that should be done today.  
+Each recommendation must be specific, actionable, and realistic — examples include watering, irrigation, pest management, fertilizer use, harvesting, soil maintenance, or livestock care.
+
+Weather Data:
+${JSON.stringify(weather, null, 2)}
+
+Output Instructions:
+-!!! IMPORTANT (DO NOT IGNORE) !!! Output only valid JSON (no markdown formatting, no backticks, no explanations).
+- The response must be a JSON array of recommendations.
+- Each object in the array must follow this structure:
+  {
+    "title": "string", // 4 words max
+    "description": "string" // atleast 20 words
+  }
+
+Example (!!do not include markdown!!, comments, or text outside JSON):
+[
+  {
+    "title": "Irrigate Your Crops",
+    "description": "The temperature is high and humidity is low, which can dry out the soil. Schedule irrigation today to maintain moisture."
+  },
+  {
+    "title": "Inspect for Pests",
+    "description": "Warm temperatures increase pest activity. Check leaves for early signs of infestation and apply organic pesticides if necessary."
+  },
+  {
+    "title": "Apply Organic Mulch",
+    "description": "Mulching helps retain soil moisture and regulate temperature under hot weather conditions."
+  }
+]
+`;
+};

@@ -21,7 +21,7 @@ export default function UserLayout({
       if (user) {
         setAuthenticated(true);
       } else {
-        router.push('/login');
+        router.push("/login");
       }
       setLoading(false);
     });
@@ -38,7 +38,7 @@ export default function UserLayout({
   }
 
   if (!authenticated) {
-    return null;
+    router.push("/login");
   }
 
   return (

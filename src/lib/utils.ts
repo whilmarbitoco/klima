@@ -46,3 +46,27 @@ export const isOptimalHumidity = (
 export const isOptimalPressure = (pressure: number): boolean => {
   return pressure >= 1010 && pressure <= 1025;
 };
+
+export const cleanAIResponse = (raw: string): string => {
+  let cleaned = raw.replace(/```(?:json)?/gi, "");
+
+  const firstBracketIndex = Math.min(
+    ...["[", "{"].map((ch) => cleaned.indexOf(ch)).filter((i) => i >= 0)
+  );
+  if (firstBracketIndex > 0) {
+    cleaned = cleaned.slice(firstBracketIndex);
+  }
+
+  const lastBracketIndex = Math.max(
+    cleaned.lastIndexOf("]"),
+    cleaned.lastIndexOf("}")
+  );
+  if (lastBracketIndex > 0) {
+    cleaned = cleaned.slice(0, lastBracketIndex + 1);
+  }
+
+  cleaned = cleaned.replace(/\\n/g, "");
+  cleaned = cleaned.trim();
+
+  return cleaned;
+};

@@ -22,14 +22,15 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { Device, Weather } from "@/types";
+import { Device, Recommendation, Weather } from "@/types";
 import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getDeviceById } from "@/sevice/deviceService";
 import { getWeatherDataByDevice } from "@/sevice/weatherService";
-import { moistureAverage } from "@/lib/utils";
+import { cleanAIResponse, moistureAverage } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
 import { weatherData } from "@/constant";
+import RecommendationCard from "@/components/RecommendationCard";
 
 export default function DeviceAnalytics() {
   const params = useParams();
@@ -39,6 +40,35 @@ export default function DeviceAnalytics() {
   const [device, setDevice] = useState<Device | null>(null);
   const [weather, setWeather] = useState<Weather[] | null>(null);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
+  const [recommendations, setrecommendations] = useState<
+    Recommendation[] | null
+  >(null);
+
+  const refreshRecommendation = async () => {
+    const requestBody = {
+      weather: weather,
+    };
+
+    const response = await fetch("/api/recommend", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      console.log(response);
+      return;
+    }
+
+    const data = await response.json();
+
+    const formatted = JSON.parse(
+      cleanAIResponse(data.message)
+    ) as Recommendation[];
+    setrecommendations(formatted);
+  };
 
   useEffect(() => {
     async function fetchData() {
@@ -53,10 +83,19 @@ export default function DeviceAnalytics() {
       if (weatherData && weatherData.length > 0) {
         setCurrentWeather(weatherData[0]);
       }
+
+      console.log(recommendations);
+      if (recommendations == null) {
+        refreshRecommendation();
+      }
     }
     fetchData();
   }, [currentUser, loading, deviceId]);
 
+  useEffect(() => {
+    if (weather == null) return;
+    refreshRecommendation();
+  }, [weather]);
   return (
     <PageLayout
       title="Analytics & Forecast"
@@ -183,22 +222,25 @@ export default function DeviceAnalytics() {
             <h3 className="text-xl font-bold text-white">AI Recommendations</h3>
           </div>
 
-          <button className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer">
+          <button
+            onClick={refreshRecommendation}
+            className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer"
+          >
             <RefreshCw className="w-4 h-4 text-gray-400 hover:text-gray-200" />
           </button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="p-4 bg-blue-600/10 rounded-lg border border-blue-600/20">
-            <h4 className="font-medium text-white mb-2 flex items-center">
-              <InfoIcon className="w-4 h-4 mr-2 text-blue-400" />
-              Humidity Management
-            </h4>
-            <p className="text-sm text-gray-300">
-              High humidity detected. Consider fungicide application within 48
-              hours to prevent crop disease.
-            </p>
-          </div>
+          {recommendations &&
+            recommendations.map(
+              (recommendation: Recommendation, index: number) => (
+                <RecommendationCard
+                  key={index}
+                  title={recommendation.title}
+                  description={recommendation.description}
+                />
+              )
+            )}
         </div>
       </div>
     </PageLayout>
