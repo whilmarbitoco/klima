@@ -151,3 +151,48 @@ export const devices: Device[] = [
     status: "offline",
   },
 ];
+
+const rawData = [
+  {
+    day: "Day 1",
+    temperature_c: 27.3,
+    humidity_percent: 82.4,
+    rain: 0.005,
+    pressure_hpa: 1010.36,
+    soil_moisture_percent: 72.71,
+  },
+  {
+    day: "Day 2",
+    temperature_c: 26.81,
+    humidity_percent: 84.07,
+    rain: 0.052,
+    pressure_hpa: 1010.54,
+    soil_moisture_percent: 69.04,
+  },
+  {
+    day: "Day 3",
+    temperature_c: 27.13,
+    humidity_percent: 84.23,
+    rain: 0.513,
+    pressure_hpa: 1010.2,
+    soil_moisture_percent: 65.78,
+  },
+  {
+    day: "Day 4",
+    temperature_c: 26.87,
+    humidity_percent: 84.52,
+    rain: 0.182,
+    pressure_hpa: 1010.19,
+    soil_moisture_percent: 57.51,
+  },
+];
+
+export const weatherPrediction: Weather[] = rawData.map((d) => ({
+  time: d.day,
+  temp: d.temperature_c,
+  humidity: d.humidity_percent,
+  rainfall: d.rain,
+  soilMoisture: d.soil_moisture_percent,
+  pressure: d.pressure_hpa,
+  timestamp: Date.now(),
+}));

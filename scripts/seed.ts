@@ -1,8 +1,14 @@
 import "dotenv/config";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, push, ref, set } from "firebase/database";
 import { generateRandomId } from "@/lib/utils";
-import { devices, farmDetails, weatherData } from "@/constant";
+import {
+  devices,
+  farmDetails,
+  weatherData,
+  weatherPrediction,
+} from "@/constant";
+import { Weather } from "@/types";
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY!,
@@ -23,9 +29,10 @@ const deviceID = "FS-A1001-WB-2025";
 async function seed() {
   console.log("[!] Seeding Firebase Realtime Database...");
 
-  await createFarmDetails();
-  await createWeatherData();
-  await createDevice();
+  // await createFarmDetails();
+  // await createWeatherData();
+  // await createDevice();
+  await seedPrediction();
 
   console.log("[+] Seeding completed.");
 }
@@ -55,6 +62,15 @@ async function createWeatherData() {
 async function createDevice() {
   const deviceRef = ref(db, `devices/${ID}/${deviceID}`);
   await set(deviceRef, devices[0]);
+}
+
+async function seedPrediction() {
+  const prediction: Weather[] = weatherPrediction;
+
+  const predictRef = ref(db, `predictions/${deviceID}`);
+
+  const newPredictRef = push(predictRef);
+  await set(newPredictRef, prediction);
 }
 
 seed().catch(console.error);

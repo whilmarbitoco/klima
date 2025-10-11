@@ -30,7 +30,11 @@ import {
   getDeviceById,
   getRecommendations,
 } from "@/sevice/deviceService";
-import { getWeatherDataByDevice } from "@/sevice/weatherService";
+import {
+  cacheDevice,
+  getLatestPrediction,
+  getWeatherDataByDevice,
+} from "@/sevice/weatherService";
 import { cleanAIResponse, moistureAverage, sleep } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
 import { weatherData } from "@/constant";
@@ -85,15 +89,17 @@ export default function DeviceAnalytics() {
       const currentDevice = await getDeviceById(currentUser.uid, deviceId);
       setDevice(currentDevice);
 
-      const weatherData = await getWeatherDataByDevice(deviceId);
+      const weatherData = await getLatestPrediction(deviceId);
       setWeather(weatherData);
 
       const currentRecommendations = await getRecommendations(deviceId);
       setrecommendations(currentRecommendations);
 
-      if (weatherData && weatherData.length > 0) {
+      if (weatherData.length > 0) {
         setCurrentWeather(weatherData[0]);
       }
+
+      await cacheDevice(currentUser.uid, deviceId);
     }
     fetchData();
   }, [currentUser, loading, deviceId]);
@@ -111,7 +117,7 @@ export default function DeviceAnalytics() {
         condition={currentWeather != null}
         header="Loading Analytics..."
       >
-        {currentWeather && (
+        {currentWeather != null && (
           <MetricsGrid
             temperature={currentWeather.temp}
             humidity={currentWeather.humidity}
