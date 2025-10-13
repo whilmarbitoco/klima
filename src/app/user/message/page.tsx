@@ -137,7 +137,11 @@ export default function VoiceChat() {
       setMessages((prev) => [...prev, botMessage]);
 
       if (mode === "voice" && ttsRef.current) {
-        ttsRef.current.speak(data.message);
+        
+      setIsListening(false);
+      await ttsRef.current.speak(data.message);
+      
+      setIsListening(true);
       }
     } catch (error) {
       console.error("Error fetching bot response:", error);
