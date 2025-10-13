@@ -1,3 +1,4 @@
+"use client";
 import Aurora from "./Aurora";
 
 interface AuthBackgroundProps {
