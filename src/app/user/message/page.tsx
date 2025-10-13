@@ -28,36 +28,32 @@ export default function VoiceChat() {
   }, []);
 
   useEffect(() => {
-  const SpeechRecognitionConstructor =
-    (window as any).SpeechRecognition ||
-    (window as any).webkitSpeechRecognition;
-  if (!SpeechRecognitionConstructor) {
-    console.warn("Speech Recognition API not supported.");
-    return;
-  }
+    const SpeechRecognitionConstructor =
+      (window as any).SpeechRecognition ||
+      (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognitionConstructor) {
+      console.warn("Speech Recognition API not supported.");
+      return;
+    }
 
-  const recognition = new SpeechRecognitionConstructor();
-  recognition.continuous = true;
-  recognition.interimResults = true;
+    const recognition = new SpeechRecognitionConstructor();
+    recognition.continuous = true;
+    recognition.interimResults = true;
 
-  recognition.onresult = (event: any) => {
-    const lastResult = event.results[event.results.length - 1];
-    if (!lastResult) return;
+    recognition.onresult = (event: any) => {
+      const transcriptText = Array.from(event.results)
+        .map((result: any) => result[0].transcript)
+        .join("");
+      setTranscript(transcriptText);
+    };
 
-    // Only use latest transcript; avoids duplicates
-    setTranscript(lastResult[0].transcript);
-  };
+    recognition.onend = () => setIsListening(false);
 
-  recognition.onend = () => {
-    // Don't stop listening automatically if user wants continuous
     if (isListening) recognition.start();
-  };
+    else recognition.stop();
 
-  if (isListening) recognition.start();
-
-  return () => recognition.stop();
-}, [isListening]);
-
+    return () => recognition.stop();
+  }, [isListening]);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -141,11 +137,7 @@ export default function VoiceChat() {
       setMessages((prev) => [...prev, botMessage]);
 
       if (mode === "voice" && ttsRef.current) {
-        
-      setIsListening(false);
-      await ttsRef.current.speak(data.message);
-      
-      setIsListening(true);
+        ttsRef.current.speak(data.message);
       }
     } catch (error) {
       console.error("Error fetching bot response:", error);
