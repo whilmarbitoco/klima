@@ -74,3 +74,19 @@ export const cleanAIResponse = (raw: string): string => {
 export const sleep = (time: number) => {
   return new Promise((resolve) => setTimeout(resolve, time));
 };
+
+export const transformDay = (index: number): string => {
+  const today = new Date();
+  const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
+
+  const dayIndex = (today.getDay() + index) % 7;
+  return index == 0 ? `${days[dayIndex]} (Today)` : days[dayIndex];
+};

@@ -4,10 +4,11 @@ import { useState, useEffect, useRef } from "react";
 import gsap from "gsap";
 import VoiceSection from "@/components/VoiceSection";
 import ChatSection from "@/components/ChatSection";
-import { Message } from "@/types";
+import { FarmDetails, Message, Weather } from "@/types";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { farmDetails, weatherData } from "@/constant";
 import { TTSService } from "@/lib/tts";
+import { getUserFarmDetails } from "@/sevice/userService";
+import { getCache, getLatestPrediction } from "@/sevice/weatherService";
 
 export default function VoiceChat() {
   const [isListening, setIsListening] = useState(false);
@@ -16,6 +17,10 @@ export default function VoiceChat() {
   const [mode, setMode] = useState<"voice" | "text">("voice");
   const containerRef = useRef<HTMLDivElement | null>(null);
   const ttsRef = useRef<TTSService | null>(null);
+
+  const [currentUser, loading] = useCurrentUser();
+  const [weatherData, setWeatherData] = useState<Weather[]>([]);
+  const [farmData, setFarmData] = useState<FarmDetails | null>(null);
 
   useEffect(() => {
     ttsRef.current = new TTSService();
@@ -60,6 +65,23 @@ export default function VoiceChat() {
     }
   }, [mode]);
 
+  useEffect(() => {
+    async function checkFarmDetails() {
+      if (loading || !currentUser) return;
+
+      const farmDetails = await getUserFarmDetails(currentUser.uid);
+      setFarmData(farmDetails);
+
+      const cacheDevice = await getCache(currentUser.uid);
+
+      if (cacheDevice != null) {
+        const cacheWeather = await getLatestPrediction(cacheDevice);
+        setWeatherData(cacheWeather);
+        console.log(cacheWeather);
+      }
+    }
+    checkFarmDetails();
+  }, [currentUser, loading]);
   const handleSend = () => {
     ttsRef.current?.stop();
     if (!transcript.trim()) return;
@@ -80,8 +102,7 @@ export default function VoiceChat() {
     try {
       const requestBody = {
         message: userMessage,
-        username: "John",
-        farm: farmDetails,
+        farm: farmData,
         weather: weatherData,
       };
 

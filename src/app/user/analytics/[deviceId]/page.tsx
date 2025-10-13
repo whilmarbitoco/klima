@@ -35,7 +35,12 @@ import {
   getLatestPrediction,
   getWeatherDataByDevice,
 } from "@/sevice/weatherService";
-import { cleanAIResponse, moistureAverage, sleep } from "@/lib/utils";
+import {
+  cleanAIResponse,
+  moistureAverage,
+  sleep,
+  transformDay,
+} from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
 import RecommendationCard from "@/components/RecommendationCard";
 import Suspender from "@/components/Suspender";
@@ -80,6 +85,7 @@ export default function DeviceAnalytics() {
   };
 
   const refreshWeatherPrediction = async () => {
+    setWeatherPrediction([]);
     const requestBody = {
       data: weather.map((w) => [
         w.temp,
@@ -104,16 +110,18 @@ export default function DeviceAnalytics() {
     }
 
     const data = await response.json();
-    const mappedWeather: Weather[] = data.map((day: any) => ({
+    const mappedWeather: Weather[] = data.map((day: any, index: number) => ({
       temp: day.temperature_c,
       humidity: day.humidity_percent,
       rainfall: day.rain,
       pressure: day.pressure_hpa,
       soilMoisture: day.soil_moisture_percent,
-      time: day.day,
+      time: transformDay(index),
     }));
 
     await createWeatherPrediction(deviceId, mappedWeather);
+    setWeatherPrediction(mappedWeather);
+    setCurrentWeather(mappedWeather[0]);
   };
 
   useEffect(() => {
