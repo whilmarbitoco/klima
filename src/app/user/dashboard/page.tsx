@@ -16,49 +16,20 @@ import PageLayout from "@/components/PageLayout";
 import MetricsGrid from "@/components/MetricsGrid";
 import { createFarmDetails, getUserFarmDetails } from "@/sevice/userService";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { FarmDetails, Weather } from "@/types";
+import { FarmDetails, Recommendation, Weather } from "@/types";
 import { getCache, getLatestPrediction } from "@/sevice/weatherService";
 import Suspender from "@/components/Suspender";
 import WeatherChart from "@/components/WeatherChart";
+import { getRecommendations } from "@/sevice/deviceService";
 
 export default function DashboardPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentUser, loading] = useCurrentUser();
   const [cacheWeather, setCacheWeather] = useState<Weather[]>([]);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
-
-  const activities = [
-    {
-      color: "bg-green-400",
-      title: "Soil moisture alert configured",
-      time: "2 hours ago",
-    },
-    {
-      color: "bg-blue-400",
-      title: "Irrigation schedule updated",
-      time: "1 day ago",
-    },
-    {
-      color: "bg-yellow-400",
-      title: "Crop growth stage recorded",
-      time: "2 days ago",
-    },
-    {
-      color: "bg-purple-400",
-      title: "Weather forecast reviewed",
-      time: "3 days ago",
-    },
-    {
-      color: "bg-red-400",
-      title: "Drought risk assessment",
-      time: "4 days ago",
-    },
-    {
-      color: "bg-cyan-400",
-      title: "Rainfall data synchronized",
-      time: "5 days ago",
-    },
-  ];
+  const [cacheRecommendations, setCacheRecommendations] = useState<
+    Recommendation[]
+  >([]);
 
   const onClose = async (data: FarmDetails) => {
     setShowOnboarding(false);
@@ -82,6 +53,9 @@ export default function DashboardPage() {
         const cacheWeather = await getLatestPrediction(cacheDevice);
         setCacheWeather(cacheWeather);
         setCurrentWeather(cacheWeather[0]);
+
+        const cacheReco = await getRecommendations(cacheDevice);
+        setCacheRecommendations(cacheReco);
       }
     }
     checkFarmDetails();
@@ -139,16 +113,21 @@ export default function DashboardPage() {
           <Activity className="w-5 h-5 text-green-400" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {activities.map((activity, index) => (
-            <ActivityCard
-              key={index}
-              color={"bg-cyan-400"}
-              title={activity.title}
-              time={activity.time}
-            />
-          ))}
-        </div>
+        <Suspender
+          condition={cacheRecommendations.length > 0}
+          header="Getting Cached Recommendations..."
+        >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {cacheRecommendations.map((activity, index) => (
+              <ActivityCard
+                key={index}
+                color={"bg-cyan-400"}
+                title={activity.title}
+                time={activity.description.slice(0, 70) + "..."}
+              />
+            ))}
+          </div>
+        </Suspender>
       </div>
 
       <OnboardingModal isOpen={showOnboarding} onClose={onClose} />

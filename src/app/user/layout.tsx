@@ -12,7 +12,7 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // true initially
   const [authenticated, setAuthenticated] = useState(false);
   const router = useRouter();
 
@@ -21,7 +21,8 @@ export default function UserLayout({
       if (user) {
         setAuthenticated(true);
       } else {
-        router.push("/login");
+        setAuthenticated(false);
+        router.replace("/login");
       }
       setLoading(false);
     });
@@ -38,7 +39,7 @@ export default function UserLayout({
   }
 
   if (!authenticated) {
-    router.push("/login");
+    return null;
   }
 
   return (
