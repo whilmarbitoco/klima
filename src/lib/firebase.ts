@@ -1,6 +1,6 @@
 import { initializeApp, getApps } from "firebase/app";
-import { getAuth, signOut } from "firebase/auth";
-import { getDatabase } from "firebase/database";
+import { getAuth, signOut, type Auth } from "firebase/auth";
+import { getDatabase, type Database } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "",
@@ -12,14 +12,15 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
 };
 
-// Initialize Firebase only on client side
-const app = typeof window !== 'undefined' && getApps().length === 0 
-  ? initializeApp(firebaseConfig) 
-  : getApps()[0];
+// Initialize Firebase
+let app;
+if (typeof window !== 'undefined') {
+  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
+}
 
-// Export null for server, actual instances for client
-export const auth = typeof window !== 'undefined' && app ? getAuth(app) : null;
-export const db = typeof window !== 'undefined' && app ? getDatabase(app) : null;
+// Create auth and db instances with proper typing
+export const auth: Auth = typeof window !== 'undefined' && app ? getAuth(app) : ({} as Auth);
+export const db: Database = typeof window !== 'undefined' && app ? getDatabase(app) : ({} as Database);
 
 export const logOut = async () => {
   if (auth) {

@@ -32,6 +32,7 @@ export default function Login() {
     const password = formData.get("password") as string;
 
     try {
+      if (!auth) throw new Error('Auth not initialized');
       await signInWithEmailAndPassword(auth, email, password);
       router.push("/user/dashboard");
     } catch (error: unknown) {
@@ -49,6 +50,7 @@ export default function Login() {
     setLoading(true);
     setError("");
     try {
+      if (!auth) throw new Error('Auth not initialized');
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({
         prompt: "select_account",
