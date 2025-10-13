@@ -66,3 +66,13 @@ export const cacheDevice = async (userId: string, deviceId: string) => {
 
   await set(cacheRef, { deviceId });
 };
+
+export const getCache = async (userId: string): Promise<string | null> => {
+  const cacheRef = ref(db, `cache/${userId}`);
+  const snapshot = await get(cacheRef);
+
+  if (!snapshot.exists()) return null;
+
+  const result = snapshot.val() as { deviceId: string };
+  return result.deviceId;
+};

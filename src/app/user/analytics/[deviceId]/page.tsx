@@ -82,7 +82,6 @@ export default function DeviceAnalytics() {
 
   useEffect(() => {
     async function fetchData() {
-      sleep(90000);
       if (loading || !currentUser) return;
 
       setTimeout(() => {}, 20000);

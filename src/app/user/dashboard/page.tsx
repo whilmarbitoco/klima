@@ -16,42 +16,16 @@ import PageLayout from "@/components/PageLayout";
 import MetricsGrid from "@/components/MetricsGrid";
 import { createFarmDetails, getUserFarmDetails } from "@/sevice/userService";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { FarmDetails } from "@/types";
+import { FarmDetails, Weather } from "@/types";
+import { getCache, getLatestPrediction } from "@/sevice/weatherService";
+import Suspender from "@/components/Suspender";
+import WeatherChart from "@/components/WeatherChart";
 
 export default function DashboardPage() {
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentUser, loading] = useCurrentUser();
-
-  const metrics = [
-    {
-      label: "Temperature",
-      value: "27.3°C",
-      status: "Optimal",
-      icon: Thermometer,
-      color: "text-orange-400",
-    },
-    {
-      label: "Soil Moisture",
-      value: "72.7%",
-      status: "Good",
-      icon: Sprout,
-      color: "text-green-400",
-    },
-    {
-      label: "Humidity",
-      value: "82.4%",
-      status: "High",
-      icon: Droplets,
-      color: "text-blue-400",
-    },
-    {
-      label: "Pressure",
-      value: "1010hPa",
-      status: "Stable",
-      icon: Gauge,
-      color: "text-purple-400",
-    },
-  ];
+  const [cacheWeather, setCacheWeather] = useState<Weather[]>([]);
+  const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
 
   const activities = [
     {
@@ -95,15 +69,19 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    if (loading) return;
-
     async function checkFarmDetails() {
-      if (!loading && currentUser != null) {
-        const userId = currentUser?.uid;
-        const farmDetails = (await getUserFarmDetails(userId)) != null;
-        setShowOnboarding(!farmDetails);
-      } else {
-        setShowOnboarding(true);
+      if (loading || !currentUser) return;
+
+      const farmDetails = (await getUserFarmDetails(currentUser.uid)) != null;
+      setShowOnboarding(!farmDetails);
+
+      const cacheDevice = await getCache(currentUser.uid);
+      console.log("Cache", cacheDevice);
+
+      if (cacheDevice != null) {
+        const cacheWeather = await getLatestPrediction(cacheDevice);
+        setCacheWeather(cacheWeather);
+        setCurrentWeather(cacheWeather[0]);
       }
     }
     checkFarmDetails();
@@ -114,7 +92,39 @@ export default function DashboardPage() {
       title="Dashboard"
       description="Welcome, Farmer John! Here's an overview of your farm's latest conditions."
     >
-      <MetricsGrid metrics={metrics} />
+      <Suspender
+        condition={currentWeather != null}
+        header="Loading Analytics..."
+      >
+        {currentWeather != null ? (
+          <MetricsGrid
+            temperature={currentWeather.temp}
+            humidity={currentWeather.humidity}
+            pressure={currentWeather.pressure}
+            soilMoisture={currentWeather.soilMoisture}
+          />
+        ) : (
+          <h1>No Cache Weather Data</h1>
+        )}
+      </Suspender>
+
+      <Suspender
+        condition={cacheWeather.length > 0}
+        header="Loading Weather Trend..."
+      >
+        <WeatherChart
+          title="Cache Weather Trends"
+          subtitle="View Analytics Page for New Data"
+          icon={Activity}
+          data={cacheWeather}
+          type="line"
+          dataKeys={[
+            { key: "temp", color: "#F97316", name: "Temperature (°C)" },
+            { key: "humidity", color: "#3B82F6", name: "Humidity (%)" },
+          ]}
+          height={320}
+        />
+      </Suspender>
 
       <div className="bg-gray-800/30 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6">
         <div className="flex items-center justify-between mb-6">
@@ -133,7 +143,7 @@ export default function DashboardPage() {
           {activities.map((activity, index) => (
             <ActivityCard
               key={index}
-              color={activity.color}
+              color={"bg-cyan-400"}
               title={activity.title}
               time={activity.time}
             />
