@@ -12,17 +12,17 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID || "",
 };
 
-let app;
-let auth: any = null;
-let db: any = null;
+// Initialize Firebase only on client side
+const app = typeof window !== 'undefined' && getApps().length === 0 
+  ? initializeApp(firebaseConfig) 
+  : getApps()[0];
 
-if (typeof window !== 'undefined') {
-  app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-  auth = getAuth(app);
-  db = getDatabase(app);
-}
+// Export null for server, actual instances for client
+export const auth = typeof window !== 'undefined' && app ? getAuth(app) : null;
+export const db = typeof window !== 'undefined' && app ? getDatabase(app) : null;
 
-export { auth, db };
 export const logOut = async () => {
-  await signOut(auth);
+  if (auth) {
+    await signOut(auth);
+  }
 };
