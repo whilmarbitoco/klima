@@ -9,7 +9,7 @@ export function useCurrentUser(): [User | null, boolean] {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !auth) {
       setLoading(false);
       return;
     }

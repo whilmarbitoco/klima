@@ -17,7 +17,7 @@ export default function UserLayout({
   const router = useRouter();
 
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (typeof window === 'undefined' || !auth) {
       setLoading(false);
       return;
     }
