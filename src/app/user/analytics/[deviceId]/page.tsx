@@ -3,7 +3,6 @@ import {
   CloudRain,
   Sprout,
   TrendingUp,
-  AlertTriangle,
   Activity,
   RefreshCw,
   InfoIcon,
@@ -32,14 +31,13 @@ import {
 } from "@/sevice/deviceService";
 import {
   cacheDevice,
+  createWeatherPrediction,
   getLatestPrediction,
   getWeatherDataByDevice,
 } from "@/sevice/weatherService";
 import { cleanAIResponse, moistureAverage, sleep } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
-import { weatherData } from "@/constant";
 import RecommendationCard from "@/components/RecommendationCard";
-import { Spinner } from "@/components/Spinner";
 import Suspender from "@/components/Suspender";
 
 export default function DeviceAnalytics() {
@@ -49,13 +47,14 @@ export default function DeviceAnalytics() {
   const [currentUser, loading] = useCurrentUser();
   const [device, setDevice] = useState<Device | null>(null);
   const [weather, setWeather] = useState<Weather[]>([]);
+  const [weatherPrediction, setWeatherPrediction] = useState<Weather[]>([]);
   const [currentWeather, setCurrentWeather] = useState<Weather | null>(null);
   const [recommendations, setrecommendations] = useState<Recommendation[]>([]);
 
   const refreshRecommendation = async () => {
     setrecommendations([]);
     const requestBody = {
-      weather: weather,
+      weather: weatherPrediction,
     };
 
     const response = await fetch("/api/recommend", {
@@ -80,6 +79,43 @@ export default function DeviceAnalytics() {
     await addRecommendations(deviceId, formatted);
   };
 
+  const refreshWeatherPrediction = async () => {
+    const requestBody = {
+      data: weather.map((w) => [
+        w.temp,
+        w.humidity,
+        w.rainfall,
+        w.pressure,
+        w.soilMoisture,
+      ]),
+    };
+
+    const response = await fetch("https://wb2c0-klima.hf.space/predict", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(requestBody),
+    });
+
+    if (!response.ok) {
+      console.log(response);
+      return;
+    }
+
+    const data = await response.json();
+    const mappedWeather: Weather[] = data.map((day: any) => ({
+      temp: day.temperature_c,
+      humidity: day.humidity_percent,
+      rainfall: day.rain,
+      pressure: day.pressure_hpa,
+      soilMoisture: day.soil_moisture_percent,
+      time: day.day,
+    }));
+
+    await createWeatherPrediction(deviceId, mappedWeather);
+  };
+
   useEffect(() => {
     async function fetchData() {
       if (loading || !currentUser) return;
@@ -89,7 +125,7 @@ export default function DeviceAnalytics() {
       setDevice(currentDevice);
 
       const weatherData = await getLatestPrediction(deviceId);
-      setWeather(weatherData);
+      setWeatherPrediction(weatherData);
 
       const currentRecommendations = await getRecommendations(deviceId);
       setrecommendations(currentRecommendations);
@@ -99,6 +135,9 @@ export default function DeviceAnalytics() {
       }
 
       await cacheDevice(currentUser.uid, deviceId);
+
+      const deviceWeatherData = await getWeatherDataByDevice(deviceId);
+      setWeather(deviceWeatherData);
     }
     fetchData();
   }, [currentUser, loading, deviceId]);
@@ -137,6 +176,7 @@ export default function DeviceAnalytics() {
           </p>
         </div>
         <button
+          onClick={refreshWeatherPrediction}
           title="Refresh Weather Prediction"
           className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer"
         >
@@ -147,14 +187,14 @@ export default function DeviceAnalytics() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div className="xl:col-span-2">
           <Suspender
-            condition={weather.length > 0}
+            condition={weatherPrediction.length > 0}
             header="Loading Weather Trend..."
           >
             <WeatherChart
               title="Weather Trends"
               subtitle="4-day forecast analysis"
               icon={Activity}
-              data={weather}
+              data={weatherPrediction}
               type="line"
               dataKeys={[
                 { key: "temp", color: "#F97316", name: "Temperature (°C)" },
@@ -166,14 +206,14 @@ export default function DeviceAnalytics() {
         </div>
 
         <Suspender
-          condition={weather.length > 0}
+          condition={weatherPrediction.length > 0}
           header="Loading Rainfall Data..."
         >
           <WeatherChart
             title="Rainfall"
             subtitle="Expected precipitation"
             icon={CloudRain}
-            data={weather}
+            data={weatherPrediction}
             type="bar"
             dataKeys={[
               { key: "rainfall", color: "#FFB8D9", name: "Rainfall (mm)" },
@@ -198,10 +238,10 @@ export default function DeviceAnalytics() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <Suspender condition={weather.length > 0}>
+            <Suspender condition={weatherPrediction.length > 0}>
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={weather}>
+                  <AreaChart data={weatherPrediction}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis dataKey="time" stroke="#9CA3AF" fontSize={12} />
                     <YAxis stroke="#9CA3AF" fontSize={12} />
@@ -228,11 +268,11 @@ export default function DeviceAnalytics() {
             </Suspender>
           </div>
 
-          {weatherData &&
-            Array.isArray(weatherData) &&
-            weatherData.length > 0 && (
+          {weatherPrediction &&
+            Array.isArray(weatherPrediction) &&
+            weatherPrediction.length > 0 && (
               <MoistureAnalysis
-                moisture={weatherData.map((w) => w.soilMoisture)}
+                moisture={weatherPrediction.map((w) => w.soilMoisture)}
               />
             )}
         </div>
