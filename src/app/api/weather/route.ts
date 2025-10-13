@@ -17,6 +17,8 @@ export async function POST(request: NextRequest) {
 
     NextResponse.json({ deviceId });
   } catch (error) {
+    console.log(error);
+
     return NextResponse.json(
       { error: "Failed to process request" },
       { status: 500 }

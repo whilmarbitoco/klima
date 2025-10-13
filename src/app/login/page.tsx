@@ -7,50 +7,59 @@ import Logo from "../../components/Logo";
 import InputField from "../../components/InputField";
 import Divider from "../../components/Divider";
 import AuthBackground from "../../components/AuthBackground";
-import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      router.push('/user/dashboard');
-    } catch (error: any) {
-      setError(error.message);
+      router.push("/user/dashboard");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error("Error message:", error.message);
+        setError(error.message);
+      } else {
+        console.error("An unknown error occurred.");
+      }
     }
     setLoading(false);
   };
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({
-        prompt: 'select_account'
+        prompt: "select_account",
       });
       const result = await signInWithPopup(auth, provider);
       if (result.user) {
-        router.push('/user/dashboard');
+        router.push("/user/dashboard");
       }
-    } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
-        setError('Google sign-in failed. Please try again.');
+    } catch (error: unknown) {
+      if (error instanceof Error && 'code' in error && error.code !== "auth/popup-closed-by-user") {
+        setError("Google sign-in failed. Please try again.");
       }
     }
     setLoading(false);
@@ -115,7 +124,10 @@ export default function Login() {
                 />
                 <span className="ml-2 text-sm text-gray-300">Remember me</span>
               </div>
-              <Link href="#" className="text-sm text-green-400 hover:text-green-300">
+              <Link
+                href="#"
+                className="text-sm text-green-400 hover:text-green-300"
+              >
                 Forgot password?
               </Link>
             </div>
@@ -125,7 +137,7 @@ export default function Login() {
               disabled={loading}
               className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? "Signing in..." : "Sign In"}
             </button>
           </form>
 
@@ -136,12 +148,12 @@ export default function Login() {
             disabled={loading}
             className="w-full bg-white text-gray-900 py-3 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
           >
-            <span>{loading ? 'Signing in...' : 'Continue with Google'}</span>
+            <span>{loading ? "Signing in..." : "Continue with Google"}</span>
           </button>
 
           {/* Footer */}
           <p className="mt-8 text-center text-gray-400">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/signup"
               className="text-green-400 hover:text-green-300 font-medium"
@@ -160,7 +172,8 @@ export default function Login() {
               Welcome Back to KLIMA
             </h2>
             <p className="text-lg lg:text-xl text-gray-200 mb-8">
-              Continue your journey with AI-powered weather intelligence and precision farming insights.
+              Continue your journey with AI-powered weather intelligence and
+              precision farming insights.
             </p>
 
             {/* Features list */}

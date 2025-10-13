@@ -10,7 +10,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "KLIMA - Smart Weather Intelligence",
-  description: "Knowledge-base Local Intelligence for Microweather Analysis. AI-powered weather prediction with IoT integration for accurate, real-time forecasts.",
+  description:
+    "Knowledge-base Local Intelligence for Microweather Analysis. AI-powered weather prediction with IoT integration for accurate, real-time forecasts.",
 };
 
 export default function RootLayout({
@@ -19,8 +20,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} antialiased`}>{children}</body>
+    <html lang="en" className={poppins.variable}>
+      <head>
+        <link rel="icon" href="/favicon.png" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <meta name="theme-color" content="#10b981" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body className="antialiased">{children}</body>
     </html>
   );
 }

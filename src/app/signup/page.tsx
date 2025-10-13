@@ -5,7 +5,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Logo from "../../components/Logo";
 import InputField from "../../components/InputField";
-import GoogleButton from "../../components/GoogleButton";
+
 import Divider from "../../components/Divider";
 import AuthBackground from "../../components/AuthBackground";
 import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
@@ -39,8 +39,10 @@ export default function Signup() {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
       router.push('/user/dashboard');
-    } catch (error: any) {
-      setError(error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        setError(error.message);
+      }
     }
     setLoading(false);
   };
@@ -57,8 +59,8 @@ export default function Signup() {
       if (result.user) {
         router.push('/user/dashboard');
       }
-    } catch (error: any) {
-      if (error.code !== 'auth/popup-closed-by-user') {
+    } catch (error: unknown) {
+      if (error instanceof Error && 'code' in error && error.code !== 'auth/popup-closed-by-user') {
         setError('Google sign-in failed. Please try again.');
       }
     }

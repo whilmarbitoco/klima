@@ -5,7 +5,6 @@ import {
   TrendingUp,
   Activity,
   RefreshCw,
-  InfoIcon,
 } from "lucide-react";
 import { useParams } from "next/navigation";
 import PageLayout from "@/components/PageLayout";
@@ -22,7 +21,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Device, Recommendation, Weather } from "@/types";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import {
   addRecommendations,
@@ -37,8 +36,6 @@ import {
 } from "@/sevice/weatherService";
 import {
   cleanAIResponse,
-  moistureAverage,
-  sleep,
   transformDay,
 } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
@@ -110,7 +107,7 @@ export default function DeviceAnalytics() {
     }
 
     const data = await response.json();
-    const mappedWeather: Weather[] = data.map((day: any, index: number) => ({
+    const mappedWeather: Weather[] = data.map((day: { temperature_c: number; humidity_percent: number; rain: number; pressure_hpa: number; soil_moisture_percent: number }, index: number) => ({
       temp: day.temperature_c,
       humidity: day.humidity_percent,
       rainfall: day.rain,

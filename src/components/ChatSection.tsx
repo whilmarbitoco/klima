@@ -102,7 +102,7 @@ export default function ChatSection({
             </h3>
             <p className="text-gray-500 text-sm max-w-sm">
               Ask me anything about your crops, weather conditions, or farming
-              advice. I'm here to help!
+              advice. I&apos;m here to help!
             </p>
           </div>
         )}

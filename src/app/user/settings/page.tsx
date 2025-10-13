@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, ChangeEvent, KeyboardEvent, useEffect } from "react";
-import { User, Wifi, Plus, Trash2, Edit3, Save } from "lucide-react";
+import { useState, useEffect } from "react";
+import { User, Wifi, Plus, Edit3, Save } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
 import { Device, PersonalInfo } from "@/types";
 import DeviceSettingsCard from "@/components/DeviceSettingsCard";
@@ -11,7 +11,7 @@ import { createDevice, getDevices, removeDevice } from "@/sevice/deviceService";
 export default function Settings() {
   const [currentUser, loading] = useCurrentUser();
 
-  const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
+  const [personalInfo] = useState<PersonalInfo>({
     fullname: "John",
     location: "N/A",
   });

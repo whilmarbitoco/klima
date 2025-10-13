@@ -5,10 +5,8 @@ import {
   Thermometer,
   Droplets,
   Gauge,
-  CloudRain,
   MapPin,
   Activity,
-  Sprout,
 } from "lucide-react";
 import OnboardingModal from "@/components/OnboardingModal";
 import ActivityCard from "@/components/ActivityCard";
