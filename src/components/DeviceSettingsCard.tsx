@@ -4,9 +4,10 @@ import { useState } from "react";
 
 interface DeviceSettingsCardProps {
   device: Device;
+  onDelete: (deviceId: string) => void;
 }
 
-const DeviceSettingsCard = ({ device }: DeviceSettingsCardProps) => {
+const DeviceSettingsCard = ({ device, onDelete }: DeviceSettingsCardProps) => {
   return (
     <div
       key={device.deviceId}
@@ -34,7 +35,10 @@ const DeviceSettingsCard = ({ device }: DeviceSettingsCardProps) => {
           {device.status}
         </span>
 
-        <button className="cursor-pointer text-red-400 hover:text-red-300 p-1 rounded transition-colors">
+        <button
+          onClick={() => onDelete(device.deviceId)}
+          className="cursor-pointer text-red-400 hover:text-red-300 p-1 rounded transition-colors"
+        >
           <Trash2 className="w-4 h-4" />
         </button>
       </div>

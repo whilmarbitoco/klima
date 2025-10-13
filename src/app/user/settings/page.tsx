@@ -6,14 +6,13 @@ import PageLayout from "@/components/PageLayout";
 import { Device, PersonalInfo } from "@/types";
 import DeviceSettingsCard from "@/components/DeviceSettingsCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
-import { getDevices } from "@/sevice/deviceService";
+import { createDevice, getDevices, removeDevice } from "@/sevice/deviceService";
 
 export default function Settings() {
   const [currentUser, loading] = useCurrentUser();
 
   const [personalInfo, setPersonalInfo] = useState<PersonalInfo>({
-    firstname: "John",
-    lastname: "Doe",
+    fullname: "John",
     location: "N/A",
   });
 
@@ -22,28 +21,35 @@ export default function Settings() {
   const [newDevice, setNewDevice] = useState<Device>({
     deviceId: "",
     name: "",
+    status: "online",
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [showAddDeviceForm, setShowAddDeviceForm] = useState(false);
 
-  const addDevice = () => {
+  const addDevice = async () => {
+    if (currentUser == null) return;
+
     if (newDevice.deviceId && newDevice.name) {
-      setDevices((prev) => [
-        ...prev,
-        {
-          id: Date.now(),
-          ...newDevice,
-          status: "offline",
-        },
-      ]);
+      setDevices((prev) => [...prev, newDevice]);
       setNewDevice({ deviceId: "", name: "" });
       setShowAddDeviceForm(false);
+      await createDevice(currentUser.uid, newDevice);
     }
+  };
+
+  const deleteDevice = async (deviceId: string) => {
+    if (currentUser == null) return;
+
+    const filtered = devices.filter((device) => device.deviceId !== deviceId);
+    setDevices(filtered);
+    await removeDevice(currentUser.uid, deviceId);
   };
 
   useEffect(() => {
     if (loading || currentUser == null) return;
+
+    console.log(currentUser);
 
     const fetchData = async () => {
       const currentDevices = await getDevices(currentUser.uid);
@@ -85,9 +91,7 @@ export default function Settings() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(
-            ["firstname", "lastname", "location"] as (keyof PersonalInfo)[]
-          ).map((field) => (
+          {(["fullname", "location"] as (keyof PersonalInfo)[]).map((field) => (
             <div key={field}>
               <label className="block text-sm font-medium text-gray-400 mb-2 capitalize">
                 {field}
@@ -165,7 +169,11 @@ export default function Settings() {
 
         <div className="space-y-4">
           {devices.map((device) => (
-            <DeviceSettingsCard key={device.deviceId} device={device} />
+            <DeviceSettingsCard
+              key={device.deviceId}
+              device={device}
+              onDelete={deleteDevice}
+            />
           ))}
         </div>
       </div>

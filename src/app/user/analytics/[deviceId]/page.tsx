@@ -137,7 +137,10 @@ export default function DeviceAnalytics() {
             better.
           </p>
         </div>
-        <button className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer">
+        <button
+          title="Refresh Weather Prediction"
+          className="p-2 rounded-lg hover:bg-gray-700/50 transition-colors cursor-pointer"
+        >
           <RefreshCw className="w-4 h-4 text-gray-400 hover:text-gray-200" />
         </button>
       </div>

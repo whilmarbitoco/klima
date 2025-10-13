@@ -36,7 +36,7 @@ Your task:
 Based on the following weather data, recommend at least three (3) farming actions that should be done today.  
 Each recommendation must be specific, actionable, and realistic — examples include watering, irrigation, pest management, fertilizer use, harvesting, soil maintenance, or livestock care.
 
-Weather Data:
+4-Day AI-Powered Weather Prediction:
 ${JSON.stringify(weather, null, 2)}
 
 Output Instructions:

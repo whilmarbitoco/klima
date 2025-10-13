@@ -7,8 +7,7 @@ export interface Device {
 }
 
 export interface PersonalInfo {
-  firstname: string;
-  lastname: string;
+  fullname: string;
   location: string;
 }
 

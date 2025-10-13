@@ -1,11 +1,11 @@
-import { ref, push, set, get } from "firebase/database";
+import { ref, push, set, get, remove } from "firebase/database";
 import { db } from "@/lib/firebase";
 import { Device, Recommendation } from "@/types";
 import { generateRandomId } from "@/lib/utils";
 
 export const createDevice = async (userId: string, deviceData: Device) => {
-  const newDeviceRef = push(ref(db, `users/${userId}/${deviceData.deviceId}`));
-  await set(newDeviceRef, deviceData);
+  const deviceRef = ref(db, `devices/${userId}/${deviceData.deviceId}`);
+  await set(deviceRef, deviceData);
 };
 
 export const getDevices = async (userId: string): Promise<Device[]> => {
@@ -34,11 +34,8 @@ export const addRecommendations = async (
   deviceId: string,
   recommendations: Recommendation[]
 ) => {
-  recommendations.forEach(async (recommendation) => {
-    const ID = generateRandomId(recommendation.title);
-    const newRecommendationRef = push(ref(db, `recommendations/${deviceId}`));
-    await set(newRecommendationRef, recommendation);
-  });
+  const recommendationRef = ref(db, `recommendations/${deviceId}`);
+  await set(recommendationRef, recommendations);
 };
 
 export const getRecommendations = async (
@@ -54,4 +51,9 @@ export const getRecommendations = async (
   });
 
   return recommendations;
+};
+
+export const removeDevice = async (userId: string, deviceId: string) => {
+  const deviceRef = ref(db, `devices/${userId}/${deviceId}`);
+  await remove(deviceRef);
 };
