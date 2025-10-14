@@ -41,6 +41,8 @@ export default function VoiceChat() {
     recognition.interimResults = true;
 
     recognition.onresult = (event: any) => {
+      console.log(event);
+
       const transcriptText = Array.from(event.results)
         .map((result: any) => result[0].transcript)
         .join("");
@@ -82,6 +84,7 @@ export default function VoiceChat() {
     }
     checkFarmDetails();
   }, [currentUser, loading]);
+
   const handleSend = () => {
     ttsRef.current?.stop();
     if (!transcript.trim()) return;
