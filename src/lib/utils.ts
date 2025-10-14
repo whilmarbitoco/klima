@@ -90,3 +90,28 @@ export const transformDay = (index: number): string => {
   const dayIndex = (today.getDay() + index) % 7;
   return index == 0 ? `${days[dayIndex]} (Today)` : days[dayIndex];
 };
+
+export const formatCurrentDate = (): string => {
+  const currentDate = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  };
+
+  const formatter = new Intl.DateTimeFormat("en-US", options);
+  const formattedString = formatter.format(currentDate);
+  const parts = formattedString.split(", ");
+
+  if (parts.length >= 3) {
+    return `${parts[0]}, ${parts[1]} ${parts[2].split(" ")[0]}`;
+  }
+
+  return formattedString
+    .replace(/,$/, "")
+    .replace(/(\w{3})\s(\d{1,2}),\s(\d{4})\s/, "$1 $2, $3 ");
+};
