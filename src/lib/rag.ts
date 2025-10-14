@@ -40,7 +40,7 @@ export async function addWeatherData(
 export async function searchWeather(
   device_id: string,
   query: string,
-  limit = 3
+  limit = 4
 ) {
   const index = pinecone.index(INDEX);
 

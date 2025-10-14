@@ -7,7 +7,7 @@ const model = new ChatGoogleGenerativeAI({
 
 export async function generateText(system: string, prompt: string) {
   const response = await model.invoke([
-    ["system", prompt],
+    ["system", system],
     ["user", prompt],
   ]);
 
