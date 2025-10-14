@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebaseAdmin";
-import { addWeatherData } from "@/lib/qdrant";
+import { addWeatherData } from "@/lib/rag";
 import {
   formatCurrentDate,
   generateRandomId,
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     }));
 
     await createWeatherRecord(deviceId, weatherData);
-    addWeatherData(deviceId, weatherData);
+    await addWeatherData(deviceId, weatherData);
 
     return NextResponse.json(
       { message: "Weather data added successfully" },
