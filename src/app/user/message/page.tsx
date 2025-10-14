@@ -21,6 +21,7 @@ export default function VoiceChat() {
   const [currentUser, loading] = useCurrentUser();
   const [weatherData, setWeatherData] = useState<Weather[]>([]);
   const [farmData, setFarmData] = useState<FarmDetails | null>(null);
+  const [cacheDevice, setcacheDevice] = useState("");
 
   useEffect(() => {
     ttsRef.current = new TTSService();
@@ -72,14 +73,17 @@ export default function VoiceChat() {
       if (loading || !currentUser) return;
 
       const farmDetails = await getUserFarmDetails(currentUser.uid);
+      console.log(JSON.stringify(farmDetails));
+
       setFarmData(farmDetails);
 
       const cacheDevice = await getCache(currentUser.uid);
 
       if (cacheDevice != null) {
+        setcacheDevice(cacheDevice);
         const cacheWeather = await getLatestPrediction(cacheDevice);
         setWeatherData(cacheWeather);
-        console.log(cacheWeather);
+        console.log("Cache: ", cacheDevice);
       }
     }
     checkFarmDetails();
@@ -105,9 +109,12 @@ export default function VoiceChat() {
     try {
       const requestBody = {
         message: userMessage,
-        farm: farmData,
+        deviceId: cacheDevice,
         weather: weatherData,
+        farm: farmData,
       };
+
+      console.log("body: ", requestBody);
 
       const response = await fetch("/api/chat", {
         method: "POST",

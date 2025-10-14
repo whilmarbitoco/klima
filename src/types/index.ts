@@ -34,7 +34,7 @@ export interface FarmDetails {
   yearsOfExperience: string;
   crops: string[];
   irrigationSystem: string;
-  farmingConcerns: string[];
+  farmingPriority: string[];
 }
 
 export interface Message {
