@@ -11,8 +11,8 @@ export default function ProductShowcase() {
       "The KLIMA Weather Analyzer KL-2025 delivers real-time environmental data to empower precision agriculture. Built for accuracy and endurance, it provides deep insights into temperature, humidity, and atmospheric conditions across your farm.",
     image: "/product.png",
     features: [
-      "Accurate environmental sensing with ±0.3°C precision",
-      "Solar-powered with 24/7 uptime and battery backup",
+      "Accurate environmental sensors",
+      "Real-time cloud Syncing",
       "Wide 5km LoRaWAN connectivity range",
       "Durable, weatherproof enclosure for harsh climates",
     ],

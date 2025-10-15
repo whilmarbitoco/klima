@@ -6,11 +6,12 @@ const Features = () => {
     <section className="w-full py-16 lg:py-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-6">
-            Key Features
+          <h2 className="text-2xl lg:text-4xl font-bold text-white mb-6">
+            Revolutionary Tech Stack
           </h2>
-          <p className="text-gray-300 text-lg lg:text-xl max-w-2xl mx-auto">
-            Advanced technology for precise weather intelligence
+          <p className="text-gray-300 text-sm lg:text-xl max-w-3xl mx-auto">
+            Combining cutting-edge AI, deep learning, and IoT technologies to
+            revolutionize agricultural weather intelligence
           </p>
         </div>
 

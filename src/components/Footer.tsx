@@ -9,9 +9,9 @@ export default function Footer() {
           <div className="md:col-span-2">
             <Logo />
             <p className="text-gray-400 mt-4 max-w-md">
-              AI-powered microweather intelligence for modern agriculture.
-              Helping farmers make data-driven decisions with precision IoT
-              monitoring.
+              Revolutionary AI platform combining LSTM deep learning, RAG vector
+              search, and IoT sensors to deliver 4-day weather predictions and
+              intelligent farming recommendations for Philippine agriculture.
             </p>
             <div className="flex space-x-4 mt-6">
               <a
@@ -36,14 +36,14 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-white font-semibold mb-4">Product</h3>
+            <h3 className="text-white font-semibold mb-4">Technology</h3>
             <ul className="space-y-2">
               <li>
                 <a
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Features
+                  LSTM Deep Learning
                 </a>
               </li>
               <li>
@@ -51,7 +51,7 @@ export default function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Hardware
+                  RAG Vector Search
                 </a>
               </li>
               <li>
@@ -59,7 +59,7 @@ export default function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  Pricing
+                  Conversational AI
                 </a>
               </li>
               <li>
@@ -67,7 +67,15 @@ export default function Footer() {
                   href="#"
                   className="text-gray-400 hover:text-white transition-colors"
                 >
-                  API
+                  IoT Sensors
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  API Documentation
                 </a>
               </li>
             </ul>
@@ -92,23 +100,35 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-gray-400 text-sm">
-            © 2024 KLIMA. All rights reserved.
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <a
-              href="#"
-              className="text-gray-400 hover:text-white text-sm transition-colors"
-            >
-              Privacy Policy
-            </a>
-            <a
-              href="#"
-              className="text-gray-400 hover:text-white text-sm transition-colors"
-            >
-              Terms of Service
-            </a>
+        <div className="border-t border-gray-800 mt-12 pt-8">
+          <div className="text-center mb-6">
+            <p className="text-gray-300 text-sm mb-2">
+              <strong>KLIMA</strong> - Knowledge-base Local Intelligence for
+              Microweather Analysis
+            </p>
+            <p className="text-gray-400 text-xs">
+              Powered by Google Gemini AI • Pinecone Vector Database • Firebase
+              • TensorFlow
+            </p>
+          </div>
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400 text-sm">
+              © 2025 KLIMA. All rights reserved.
+            </p>
+            <div className="flex space-x-6 mt-4 md:mt-0">
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
+                Privacy Policy
+              </a>
+              <a
+                href="#"
+                className="text-gray-400 hover:text-white text-sm transition-colors"
+              >
+                Terms of Service
+              </a>
+            </div>
           </div>
         </div>
       </div>

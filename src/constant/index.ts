@@ -16,21 +16,21 @@ import {
 export const FEATURES = [
   {
     icons: icons.Brain,
-    title: "AI-Powered Prediction",
+    title: "LSTM Deep Learning",
     description:
-      "Advanced machine learning algorithms deliver highly accurate weather forecasts.",
+      "Advanced neural networks trained on Philippine weather data deliver 4-day forecasts with 94.2% accuracy.",
   },
   {
-    icons: icons.Cpu,
-    title: "IoT Integration",
+    icons: icons.Database,
+    title: "RAG Vector Search",
     description:
-      "Real-time data collection from connected weather sensors and devices.",
+      "Retrieval-Augmented Generation with Pinecone vector database for contextual weather intelligence.",
   },
   {
-    icons: icons.CloudRain,
-    title: "Microclimate Analysis",
+    icons: icons.MessageSquare,
+    title: "Conversational AI",
     description:
-      "Hyperlocal weather insights for precise location-based forecasting.",
+      "Natural language interface powered by Google Gemini for voice and text weather consultations.",
   },
 ];
 
