@@ -7,24 +7,28 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 ## 🚀 Innovative Features
 
 ### 🧠 Deep Learning Weather Prediction
+
 - **LSTM Neural Networks** trained on comprehensive Philippine weather data
 - **4-Day Weather Forecasting** with high accuracy predictions
 - **Pattern Recognition** from historical weather patterns across the Philippines
 - **Real-time Learning** from IoT sensor data to improve predictions
 
 ### 🔍 RAG-Powered Intelligence System
+
 - **Vector Database** (Pinecone) for storing weather embeddings
 - **Semantic Search** for relevant weather context retrieval
 - **Google Generative AI Embeddings** for advanced text understanding
 - **Contextual Recommendations** based on similar weather patterns
 
 ### 🗣️ Conversational AI Interface
+
 - **Natural Language Processing** with Google Gemini API
 - **Voice-to-Text & Text-to-Speech** integration
 - **Contextual Conversations** about weather and farming
 - **Personalized Responses** based on farm details and weather data
 
 ### 🌐 IoT Integration
+
 - **Real-time Sensor Data** collection from NodeMCU ESP8266
 - **Multi-parameter Monitoring**: Temperature, Humidity, Pressure, Soil Moisture, Rainfall
 - **Automatic Data Processing** and storage in Firebase Realtime Database
@@ -54,6 +58,7 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 ## 🛠️ Technology Stack
 
 ### Frontend
+
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
@@ -62,6 +67,7 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 - **Recharts** - Data visualization
 
 ### Backend & AI
+
 - **Firebase Realtime Database** - Real-time data storage
 - **Firebase Authentication** - Secure user management
 - **Google Gemini API** - Large Language Model
@@ -70,6 +76,7 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 - **Google Generative AI Embeddings** - Text embeddings
 
 ### IoT & Hardware
+
 - **NodeMCU ESP8266** - WiFi-enabled microcontroller
 - **DHT22** - Temperature & humidity sensor
 - **BMP280** - Pressure sensor
@@ -77,6 +84,7 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 - **Rain Gauge** - Precipitation measurement
 
 ### Machine Learning
+
 - **TensorFlow/Keras** - Deep learning framework
 - **LSTM Networks** - Sequential weather prediction
 - **Python** - ML model development
@@ -85,6 +93,7 @@ KLIMA is a revolutionary AI-powered microweather intelligence platform that comb
 ## 📊 API Endpoints
 
 ### Weather Data Management
+
 ```http
 POST /api/weather?deviceId={id}
 Content-Type: application/json
@@ -103,6 +112,7 @@ Content-Type: application/json
 ```
 
 ### AI-Powered Recommendations
+
 ```http
 POST /api/recommend
 Content-Type: application/json
@@ -122,6 +132,7 @@ Response:
 ```
 
 ### Conversational AI Chat
+
 ```http
 POST /api/chat
 Content-Type: application/json
@@ -141,6 +152,7 @@ Content-Type: application/json
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+ and npm
 - Firebase project setup
 - Google Cloud API key (Gemini)
@@ -150,22 +162,26 @@ Content-Type: application/json
 ### Installation
 
 1. **Clone the repository**
+
 ```bash
-git clone https://github.com/your-username/klima-web.git
+git clone https://github.com/whilmarbitoco/klima.git
 cd klima-web
 ```
 
 2. **Install dependencies**
+
 ```bash
 npm install
 ```
 
 3. **Environment Setup**
+
 ```bash
 cp .env.local.example .env.local
 ```
 
 Configure your `.env.local`:
+
 ```env
 # Firebase Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
@@ -185,11 +201,13 @@ FIREBASE_PRIVATE_KEY=your_private_key
 ```
 
 4. **Database Setup**
+
 ```bash
 npm run seed
 ```
 
 5. **Start Development Server**
+
 ```bash
 npm run dev
 ```
@@ -199,18 +217,23 @@ Visit `http://localhost:3000` to see KLIMA in action!
 ## 🔬 How It Works
 
 ### 1. Data Collection
+
 IoT sensors continuously monitor environmental conditions and send data to KLIMA's API endpoints.
 
 ### 2. LSTM Prediction
+
 The deep learning model processes historical and real-time data to generate 4-day weather forecasts.
 
 ### 3. RAG Processing
+
 Weather data is converted to embeddings and stored in Pinecone for semantic similarity search.
 
 ### 4. AI Recommendations
+
 The system retrieves relevant context and generates personalized farming recommendations using Gemini AI.
 
 ### 5. Conversational Interface
+
 Users can interact naturally with KLIMA through voice or text to get weather insights and farming advice.
 
 ## 🎯 Key Benefits
@@ -224,6 +247,7 @@ Users can interact naturally with KLIMA through voice or text to get weather ins
 ## 🔧 IoT Sensor Setup
 
 ### Hardware Requirements
+
 - NodeMCU ESP8266
 - DHT22 (Temperature/Humidity)
 - BMP280 (Pressure)
@@ -231,6 +255,7 @@ Users can interact naturally with KLIMA through voice or text to get weather ins
 - Rain Gauge Sensor
 
 ### Sensor Configuration
+
 ```cpp
 // Example Arduino code for NodeMCU
 #include <ESP8266WiFi.h>
@@ -243,7 +268,7 @@ void sendWeatherData() {
   float temp = dht.readTemperature();
   float humidity = dht.readHumidity();
   float pressure = bmp.readPressure() / 100.0F;
-  
+
   // HTTP POST to /api/weather
   // Implementation details...
 }
@@ -280,9 +305,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 Support
 
 For support and questions:
-- 📧 Email: support@klima.ai
-- 💬 Discord: [KLIMA Community](https://discord.gg/klima)
-- 📖 Documentation: [docs.klima.ai](https://docs.klima.ai)
+
+- 📧 Email: whlmrbitoco@gmail.com
 
 ---
 
