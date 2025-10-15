@@ -91,12 +91,25 @@ const Hero = () => {
             className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
           >
             <Link href="/login">
-              <button className="cursor-pointer flex items-center justify-center bg-green-600 text-white px-8 py-4 rounded-full hover:bg-green-700 transition-all duration-300 font-medium text-lg shadow-lg hover:shadow-green-500/25">
-                Start Predicting <ArrowRight className="ml-2 w-5 h-5" />
+              <button
+                className="cursor-pointer flex items-center justify-center bg-green-600 text-white 
+    px-6 py-3 md:px-8 md:py-4 
+    rounded-full transition-all duration-300 
+    font-medium text-base md:text-lg shadow-lg w-full sm:w-auto"
+              >
+                Start Predicting{" "}
+                <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5" />
               </button>
             </Link>
+
             <Link href="/signup">
-              <button className="cursor-pointer border-2 border-white/30 text-white px-8 py-4 rounded-full hover:border-white/50 transition-all duration-300 font-medium text-lg backdrop-blur-sm hover:bg-white/10">
+              <button
+                className="cursor-pointer border-2 border-white/30 text-white 
+    px-6 py-3 md:px-8 md:py-4 
+    rounded-full hover:border-white/50 transition-all duration-300 
+    font-medium text-base md:text-lg backdrop-blur-sm hover:bg-white/10 
+    w-full sm:w-auto"
+              >
                 Sign Up For Free
               </button>
             </Link>

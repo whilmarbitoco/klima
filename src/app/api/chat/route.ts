@@ -1,7 +1,7 @@
 import { generateText } from "@/lib/gemini";
 import { createChatPromptRAG } from "@/lib/prompt";
-import { searchWeather } from "@/lib/rag";
-import { isParementersMissing } from "@/lib/utils";
+import { searchWeather, weatherToText } from "@/lib/rag";
+import { farmToText, isParementersMissing } from "@/lib/utils";
 import { FarmDetails, Weather } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -29,26 +29,16 @@ export async function POST(request: NextRequest) {
       .map((m) =>
         m.metadata && "text" in m.metadata ? String(m.metadata.text) : ""
       )
-      .join("\n")
-      .replace(/\\n/g, "\n");
-
-    const weatherData = weather
-      .map(
-        (w) =>
-          `Date: ${w.time}, Temperature: ${w.temp}, Humidity: ${w.humidity}, Pressure: ${w.pressure}, Soil Moisture: ${w.soilMoisture}`
-      )
       .join("\n");
 
-    const farmDetail = `Location: ${farm.farmLocation}, Size: ${
-      farm.farmSize
-    }, Crops: ${farm.crops.join(", ")}, Irrigation: ${
-      farm.irrigationSystem
-    }, Farming Concerns: ${farm.farmingPriority.join(", ")}`;
+    const weatherData = weather.map((w) => weatherToText(w)).join("\n");
+
+    const farmDetail = farmToText(farm);
 
     const prompt = createChatPromptRAG(context, weatherData, farmDetail);
     const genAI = await generateText(prompt, message);
 
-    console.log("RAG CONTEXT: ", searchQuery);
+    console.log("PROMPT", prompt);
 
     return NextResponse.json({ message: genAI }, { status: 200 });
   } catch (error) {

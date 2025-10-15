@@ -1,3 +1,6 @@
+import { farmDetails } from "@/constant";
+import { FarmDetails } from "@/types";
+
 export function generateRandomId(base: string, length: number = 32): string {
   const randomBytes = new Uint8Array(16);
   crypto.getRandomValues(randomBytes);
@@ -114,4 +117,14 @@ export const formatCurrentDate = (): string => {
   return formattedString
     .replace(/,$/, "")
     .replace(/(\w{3})\s(\d{1,2}),\s(\d{4})\s/, "$1 $2, $3 ");
+};
+
+export const farmToText = (farm: FarmDetails) => {
+  return `Location: ${farm.farmLocation}, Size: ${
+    farm.farmSize
+  }, Crops: ${farm.crops.join(", ")}, Irrigation: ${
+    farm.irrigationSystem
+  }, Farming Concerns: ${farm.farmingPriority.join(
+    ", "
+  )}, years of experience: ${farm.yearsOfExperience}`;
 };

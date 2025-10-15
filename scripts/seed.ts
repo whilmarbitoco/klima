@@ -23,15 +23,15 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const ID = "xkIjhFDqA9SaZmhMZoUBDcqawrv1";
+const ID = "tdApW1NgDkRbEHrciGQB9FKvOQa2";
 const deviceID = "FS-A1001-WB-2025";
 
 async function seed() {
   console.log("[!] Seeding Firebase Realtime Database...");
 
   // await createFarmDetails();
-  // await createWeatherData();
-  // await createDevice();
+  await createWeatherData();
+  await createDevice();
   await seedPrediction();
 
   console.log("[+] Seeding completed.");

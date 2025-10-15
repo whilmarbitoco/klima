@@ -52,7 +52,7 @@ Output Instructions:
 - Each object in the array must follow this structure:
   {
     "title": "string", // 4 words max
-    "description": "string" // atleast 20 words
+    "description": "string" // atleast 20 words but no more than 30 words
   }
 
 Example (!!do not include markdown!!, comments, or text outside JSON):
