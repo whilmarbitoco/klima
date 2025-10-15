@@ -9,9 +9,53 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "KLIMA - Smart Weather Intelligence",
+  title: {
+    default: "KLIMA - Smart Weather Intelligence",
+    template: "%s | KLIMA",
+  },
   description:
     "Knowledge-base Local Intelligence for Microweather Analysis. AI-powered weather prediction with IoT integration for accurate, real-time forecasts.",
+  keywords: [
+    "KLIMA",
+    "AI weather prediction",
+    "microweather analysis",
+    "IoT weather system",
+    "smart agriculture",
+    "climate intelligence",
+  ],
+  authors: [{ name: "KLIMA Team" }],
+  creator: "KLIMA",
+  publisher: "KLIMA",
+  metadataBase: new URL("https://klima-eight.vercel.app"),
+  openGraph: {
+    title: "KLIMA - Smart Weather Intelligence",
+    description:
+      "AI-powered weather prediction and IoT-based microclimate analysis for smarter farming and forecasting.",
+    url: "https://klima-eight.vercel.app/",
+    siteName: "KLIMA",
+    images: [
+      {
+        url: "/favicon.png",
+        width: 1200,
+        height: 630,
+        alt: "KLIMA Weather Intelligence",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KLIMA - Smart Weather Intelligence",
+    description:
+      "AI-powered weather prediction and IoT-based microclimate analysis for smarter farming and forecasting.",
+    creator: "@whilmarbitoco",
+    images: ["/favicon.png"],
+  },
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -21,13 +65,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={poppins.variable}>
-      <head>
-        <link rel="icon" href="/favicon.png" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-        <meta name="theme-color" content="#10b981" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </head>
-      <body className="antialiased overflow-x-hidden">{children}</body>
+      <body className="antialiased overflow-x-hidden text-gray-900 bg-gray-50">
+        {children}
+      </body>
     </html>
   );
 }
