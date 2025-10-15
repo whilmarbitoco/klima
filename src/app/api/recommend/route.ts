@@ -1,73 +1,43 @@
-import { createRecommendationPrompt } from "@/lib/prompt";
+import { weatherData } from "@/constant";
+import { generateText } from "@/lib/gemini";
+import { createRecommendationPromptRAG } from "@/lib/prompt";
+import { searchWeather, weatherToText } from "@/lib/rag";
 import { isParementersMissing } from "@/lib/utils";
 import { Weather } from "@/types";
 import { NextRequest, NextResponse } from "next/server";
 
-const apiKey = process.env.NEXT_GEMINI_API_KEY;
-const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-
 interface ChatRequest {
-  weather: Weather;
+  weather: Weather[];
+  deviceId: string;
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const { weather }: ChatRequest = await request.json();
+    const { weather, deviceId }: ChatRequest = await request.json();
 
-    if (isParementersMissing([weather])) {
+    if (isParementersMissing([weather, deviceId])) {
       return NextResponse.json(
         { error: "Missing parameters" },
         { status: 400 }
       );
     }
 
-    if (!apiKey) {
-      return NextResponse.json(
-        { error: "Gemini API key not configured" },
-        { status: 500 }
-      );
-    }
+    const weatherText = weather.map(weatherToText);
+    const currentWeather = weatherText[0];
+    const textData = weatherText.join("\n");
 
-    const PROMPT = createRecommendationPrompt(weather);
+    const similarVector = await searchWeather(deviceId, currentWeather);
+    const similar = similarVector
+      .map((m) =>
+        m.metadata && "text" in m.metadata ? String(m.metadata.text) : ""
+      )
+      .join("\n");
+    const systemPrompt = createRecommendationPromptRAG(textData, similar);
+    const prompt = "Generate recommendations based on the provided data.";
 
-    console.log("Prompt:", PROMPT);
+    const result = await generateText(systemPrompt, prompt);
 
-    const requestBody = {
-      contents: [
-        {
-          parts: [
-            {
-              text: PROMPT,
-            },
-          ],
-        },
-      ],
-      generationConfig: {
-        maxOutputTokens: 300,
-        temperature: 0.7,
-      },
-    };
-
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(requestBody),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Gemini API error:", errorData);
-      throw new Error(`Gemini API error: ${response.status}`);
-    }
-
-    const data = await response.json();
-    const botMessage =
-      data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Sorry, I could not generate a response.";
-
-    return NextResponse.json({ message: botMessage });
+    return NextResponse.json({ message: result });
   } catch (error) {
     console.error("Failed to process chat message:", error);
     return NextResponse.json(

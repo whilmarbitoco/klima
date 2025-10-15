@@ -9,7 +9,7 @@ const embeddings = new GoogleGenerativeAIEmbeddings({
 
 const INDEX = "weather-data";
 
-function weatherToText(weather: Weather): string {
+export function weatherToText(weather: Weather): string {
   return `At ${weather.time}, temperature: ${weather.temp}°C, humidity: ${weather.humidity}%, rainfall: ${weather.rainfall}mm, soil moisture: ${weather.soilMoisture}%, pressure: ${weather.pressure} hPa.`;
 }
 

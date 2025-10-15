@@ -34,10 +34,7 @@ import {
   getLatestPrediction,
   getWeatherDataByDevice,
 } from "@/sevice/weatherService";
-import {
-  cleanAIResponse,
-  transformDay,
-} from "@/lib/utils";
+import { cleanAIResponse, transformDay } from "@/lib/utils";
 import MoistureAnalysis from "@/components/MoistureAnalysis";
 import RecommendationCard from "@/components/RecommendationCard";
 import Suspender from "@/components/Suspender";
@@ -57,6 +54,7 @@ export default function DeviceAnalytics() {
     setrecommendations([]);
     const requestBody = {
       weather: weatherPrediction,
+      deviceId: deviceId,
     };
 
     const response = await fetch("/api/recommend", {
@@ -107,14 +105,25 @@ export default function DeviceAnalytics() {
     }
 
     const data = await response.json();
-    const mappedWeather: Weather[] = data.map((day: { temperature_c: number; humidity_percent: number; rain: number; pressure_hpa: number; soil_moisture_percent: number }, index: number) => ({
-      temp: day.temperature_c,
-      humidity: day.humidity_percent,
-      rainfall: day.rain,
-      pressure: day.pressure_hpa,
-      soilMoisture: day.soil_moisture_percent,
-      time: transformDay(index),
-    }));
+    const mappedWeather: Weather[] = data.map(
+      (
+        day: {
+          temperature_c: number;
+          humidity_percent: number;
+          rain: number;
+          pressure_hpa: number;
+          soil_moisture_percent: number;
+        },
+        index: number
+      ) => ({
+        temp: day.temperature_c,
+        humidity: day.humidity_percent,
+        rainfall: day.rain,
+        pressure: day.pressure_hpa,
+        soilMoisture: day.soil_moisture_percent,
+        time: transformDay(index),
+      })
+    );
 
     await createWeatherPrediction(deviceId, mappedWeather);
     setWeatherPrediction(mappedWeather);
