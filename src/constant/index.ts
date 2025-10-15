@@ -141,7 +141,7 @@ export const farmDetails: FarmDetails = {
   yearsOfExperience: "10 years",
   crops: ["Rice", "Tomatoes"],
   irrigationSystem: "Surface Irrigation",
-  farmingConcerns: ["Soil Moisture", "Temperature", "Humidity", "Rainfall"],
+  farmingPriority: ["Soil Moisture", "Temperature", "Humidity", "Rainfall"],
 };
 
 export const devices: Device[] = [

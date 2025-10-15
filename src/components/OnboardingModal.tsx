@@ -18,7 +18,7 @@ export default function OnboardingModal({
     farmLocation: "",
     farmSize: "",
     crops: [] as string[],
-    farmingConcerns: [] as string[],
+    farmingPriority: [] as string[],
     yearsOfExperience: "",
     irrigationSystem: "",
   });
@@ -42,9 +42,9 @@ export default function OnboardingModal({
   const handleConcernToggle = (concern: string) => {
     setFormData((prev) => ({
       ...prev,
-      farmingPriority: prev.farmingConcerns.includes(concern)
-        ? prev.farmingConcerns.filter((c) => c !== concern)
-        : [...prev.farmingConcerns, concern],
+      farmingPriority: prev.farmingPriority.includes(concern)
+        ? prev.farmingPriority.filter((c) => c !== concern)
+        : [...prev.farmingPriority, concern],
     }));
   };
 
@@ -239,7 +239,7 @@ export default function OnboardingModal({
                     key={concern}
                     onClick={() => handleConcernToggle(concern)}
                     className={`p-3 rounded-lg text-sm font-medium transition-colors ${
-                      formData.farmingConcerns.includes(concern)
+                      formData.farmingPriority.includes(concern)
                         ? "bg-green-600 text-white"
                         : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
