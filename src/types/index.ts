@@ -6,11 +6,6 @@ export interface Device {
   status?: DeviceStatus;
 }
 
-export interface PersonalInfo {
-  fullname: string;
-  location: string;
-}
-
 export interface Weather {
   time: string;
   temp: number;
@@ -26,6 +21,7 @@ export interface UserProfile {
   name: string;
   email: string;
   location: string;
+  photo: string;
 }
 
 export interface FarmDetails {

@@ -8,7 +8,7 @@ import {
   weatherData,
   weatherPrediction,
 } from "@/constant";
-import { Weather } from "@/types";
+import { UserProfile, Weather } from "@/types";
 
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY!,
@@ -23,16 +23,17 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const ID = "tdApW1NgDkRbEHrciGQB9FKvOQa2";
+const ID = "xkIjhFDqA9SaZmhMZoUBDcqawrv1";
 const deviceID = "FS-A1001-WB-2025";
 
 async function seed() {
   console.log("[!] Seeding Firebase Realtime Database...");
 
   // await createFarmDetails();
-  await createWeatherData();
-  await createDevice();
-  await seedPrediction();
+  // await createWeatherData();
+  // await createDevice();
+  // await seedPrediction();
+  await createUserProfile();
 
   console.log("[+] Seeding completed.");
 }
@@ -71,6 +72,18 @@ async function seedPrediction() {
 
   const newPredictRef = push(predictRef);
   await set(newPredictRef, prediction);
+}
+
+async function createUserProfile() {
+  const profileRef = ref(db, `users/${ID}`);
+  const user: UserProfile = {
+    userId: ID,
+    name: "Whilmar Bitoco",
+    email: "whlmrbitoco@gmail.com",
+    location: "Tagum",
+    photo: "",
+  };
+  await set(profileRef, user);
 }
 
 seed().catch(console.error);

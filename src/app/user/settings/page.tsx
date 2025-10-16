@@ -3,17 +3,21 @@
 import { useState, useEffect } from "react";
 import { User, Wifi, Plus, Edit3, Save } from "lucide-react";
 import PageLayout from "@/components/PageLayout";
-import { Device, PersonalInfo } from "@/types";
+import { Device, UserProfile } from "@/types";
 import DeviceSettingsCard from "@/components/DeviceSettingsCard";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { createDevice, getDevices, removeDevice } from "@/sevice/deviceService";
+import { getUserProfile, updateUserProfile } from "@/sevice/userService";
 
 export default function Settings() {
   const [currentUser, loading] = useCurrentUser();
 
-  const [personalInfo] = useState<PersonalInfo>({
-    fullname: "John",
+  const [personalInfo, setPersonalInfo] = useState<UserProfile>({
+    name: "N/A",
     location: "N/A",
+    photo: "",
+    email: "",
+    userId: "",
   });
 
   const [devices, setDevices] = useState<Device[]>([]);
@@ -26,6 +30,12 @@ export default function Settings() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [showAddDeviceForm, setShowAddDeviceForm] = useState(false);
+
+  const updateProfile = async () => {
+    if (currentUser == null) return;
+    await updateUserProfile(currentUser.uid, personalInfo);
+    setIsEditing(!isEditing);
+  };
 
   const addDevice = async () => {
     if (currentUser == null) return;
@@ -47,13 +57,15 @@ export default function Settings() {
   };
 
   useEffect(() => {
-    if (loading || currentUser == null) return;
-
-    console.log(currentUser);
-
     const fetchData = async () => {
+      if (currentUser == null) return;
+
       const currentDevices = await getDevices(currentUser.uid);
       setDevices(currentDevices);
+
+      const current = await getUserProfile(currentUser.uid);
+      if (current == null) return;
+      setPersonalInfo(current);
     };
 
     fetchData();
@@ -90,20 +102,37 @@ export default function Settings() {
           </button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {(["fullname", "location"] as (keyof PersonalInfo)[]).map((field) => (
-            <div key={field}>
-              <label className="block text-sm font-medium text-gray-400 mb-2 capitalize">
-                {field}
-              </label>
-              <input
-                type="text"
-                value={personalInfo[field]}
-                disabled={!isEditing}
-                className="w-full bg-gray-700/50 text-white px-4 py-2 rounded-lg border border-gray-600/50 disabled:opacity-50 focus:border-green-500 focus:outline-none transition-colors"
-              />
-            </div>
-          ))}
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(["name", "location"] as (keyof UserProfile)[]).map((field) => (
+              <div key={field}>
+                <label className="block text-sm font-medium text-gray-400 mb-2 capitalize">
+                  {field}
+                </label>
+                <input
+                  onChange={(e) =>
+                    setPersonalInfo((prev) => ({
+                      ...prev,
+                      [field]: e.target.value,
+                    }))
+                  }
+                  type="text"
+                  value={personalInfo[field]}
+                  disabled={!isEditing}
+                  className="w-full bg-gray-700/50 text-white px-4 py-2 rounded-lg border border-gray-600/50 disabled:opacity-50 focus:border-green-500 focus:outline-none transition-colors"
+                />
+              </div>
+            ))}
+          </div>
+          <div className={`flex flex-col items-end ${!isEditing && "hidden"}`}>
+            <button
+              onClick={updateProfile}
+              className="cursor-pointer w-[10dwvh] inline-flex items-center justify-center space-x-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Update</span>
+            </button>
+          </div>
         </div>
       </div>
 

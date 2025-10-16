@@ -1,9 +1,28 @@
 import { ref, push, set, get } from "firebase/database";
 import { db } from "@/lib/firebase";
-import { UserProfile } from "firebase/auth";
-import { FarmDetails } from "@/types";
+import { FarmDetails, UserProfile } from "@/types";
 
 export const createUserProfile = async (
+  userId: string,
+  profileData: UserProfile
+) => {
+  const userRef = ref(db, `users/${userId}`);
+  await set(userRef, profileData);
+};
+
+export const getUserProfile = async (
+  userId: string
+): Promise<UserProfile | null> => {
+  const userRef = ref(db, `users/${userId}`);
+  const snapshot = await get(userRef);
+  if (snapshot.exists()) {
+    return snapshot.val() as UserProfile;
+  } else {
+    return null;
+  }
+};
+
+export const updateUserProfile = async (
   userId: string,
   profileData: UserProfile
 ) => {

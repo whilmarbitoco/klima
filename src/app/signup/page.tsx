@@ -8,37 +8,52 @@ import InputField from "../../components/InputField";
 
 import Divider from "../../components/Divider";
 import AuthBackground from "../../components/AuthBackground";
-import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useRouter } from 'next/navigation';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+} from "firebase/auth";
+import { auth } from "@/lib/firebase";
+import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
+import { createUserProfile } from "@/sevice/userService";
+import { UserProfile } from "@/types";
 
 export default function Signup() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    
+    setError("");
+
     const formData = new FormData(e.currentTarget);
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const confirmPassword = formData.get('confirmPassword') as string;
-    
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const confirmPassword = formData.get("confirmPassword") as string;
+
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
-    
+
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-      router.push('/user/dashboard');
+      const user = await createUserWithEmailAndPassword(auth, email, password);
+      const userProfile: UserProfile = {
+        userId: user.user.uid,
+        email,
+        name: formData.get("name") as string,
+        location: "N/A",
+        photo: "",
+      };
+
+      createUserProfile(user.user.uid, userProfile);
+      router.push("/user/dashboard");
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(error.message);
@@ -49,19 +64,32 @@ export default function Signup() {
 
   const handleGoogleSignIn = async () => {
     setLoading(true);
-    setError('');
+    setError("");
     try {
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({
-        prompt: 'select_account'
+        prompt: "select_account",
       });
       const result = await signInWithPopup(auth, provider);
       if (result.user) {
-        router.push('/user/dashboard');
+        const userProfile: UserProfile = {
+          userId: result.user.uid,
+          email: result.user.email as string,
+          name: result.user.displayName as string,
+          location: "N/A",
+          photo: result.user.photoURL || "",
+        };
+
+        createUserProfile(result.user.uid, userProfile);
+        router.push("/user/dashboard");
       }
     } catch (error: unknown) {
-      if (error instanceof Error && 'code' in error && error.code !== 'auth/popup-closed-by-user') {
-        setError('Google sign-in failed. Please try again.');
+      if (
+        error instanceof Error &&
+        "code" in error &&
+        error.code !== "auth/popup-closed-by-user"
+      ) {
+        setError("Google sign-in failed. Please try again.");
       }
     }
     setLoading(false);
@@ -170,7 +198,7 @@ export default function Signup() {
               disabled={loading}
               className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50"
             >
-              {loading ? 'Creating Account...' : 'Create Account'}
+              {loading ? "Creating Account..." : "Create Account"}
             </button>
           </form>
 
@@ -181,7 +209,7 @@ export default function Signup() {
             disabled={loading}
             className="w-full bg-white text-gray-900 py-3 px-4 rounded-lg font-medium hover:bg-gray-100 transition-colors flex items-center justify-center space-x-2 disabled:opacity-50"
           >
-            <span>{loading ? 'Signing in...' : 'Continue with Google'}</span>
+            <span>{loading ? "Signing in..." : "Continue with Google"}</span>
           </button>
 
           {/* Footer */}
