@@ -9,6 +9,7 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { TTSService } from "@/lib/tts";
 import { getUserFarmDetails } from "@/sevice/userService";
 import { getCache, getLatestPrediction } from "@/sevice/weatherService";
+import { cleanAIResponse } from "@/lib/utils";
 
 export default function VoiceChat() {
   const [isListening, setIsListening] = useState(false);
@@ -113,8 +114,6 @@ export default function VoiceChat() {
         weather: weatherData,
         farm: farmData,
       };
-
-      console.log("body: ", requestBody);
 
       const response = await fetch("/api/chat", {
         method: "POST",
