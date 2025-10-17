@@ -4,14 +4,6 @@
 
 KLIMA is a revolutionary AI-powered microweather intelligence platform that combines **Deep Learning (LSTM)**, **RAG (Retrieval-Augmented Generation)**, and **IoT sensors** to deliver hyperlocal weather predictions and intelligent farming recommendations for modern agriculture.
 
-## 🏗️ Architecture Overview
-
-The KLIMA system integrates **IoT**, **LLMs**, and **RAG pipelines** to deliver hyperlocal and intelligent weather insights. Below is the high-level architecture of the entire platform:
-
-![KLIMA System Architecture](docs/diagram.png)
-
-_Figure 1. KLIMA’s end-to-end architecture connecting IoT devices, AI pipelines, and user interfaces._
-
 ## 🚀 Innovative Features
 
 ### 🧠 Deep Learning Weather Prediction
@@ -44,24 +36,12 @@ _Figure 1. KLIMA’s end-to-end architecture connecting IoT devices, AI pipeline
 
 ## 🏗️ Architecture Overview
 
-```
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   IoT Sensors   │───▶│   KLIMA API      │───▶│  LSTM Model     │
-│  (NodeMCU)      │    │  (Next.js)       │    │  (Python)       │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │
-                                ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│  Vector DB      │◀───│  RAG Pipeline    │───▶│  Gemini AI      │
-│  (Pinecone)     │    │  (LangChain)     │    │  (Google)       │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                                │
-                                ▼
-                       ┌──────────────────┐
-                       │   Web Interface  │
-                       │   (Next.js)      │
-                       └──────────────────┘
-```
+The KLIMA system integrates **IoT**, **LLMs**, and **RAG pipelines** to deliver hyperlocal and intelligent weather insights. Below is the high-level architecture of the entire platform:
+
+<p align="center">
+  <img src="docs/diagram.png" alt="KLIMA Architecture Diagram" width="700" style="transform: rotate(-90deg);">
+</p>
+_Figure 1. KLIMA’s end-to-end architecture connecting IoT devices, AI pipelines, and user interfaces._
 
 ## 🛠️ Technology Stack
 
