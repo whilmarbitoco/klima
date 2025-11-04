@@ -33,6 +33,24 @@ export const FEATURES = [
     description:
       "Natural language interface powered by Google Gemini for voice and text weather consultations.",
   },
+  {
+    icons: icons.Cpu,
+    title: "IoT Sensor Network",
+    description:
+      "Real-time data from NodeMCU ESP8266 sensors monitoring temperature, humidity, soil moisture, and pressure.",
+  },
+  {
+    icons: icons.Zap,
+    title: "Real-time Processing",
+    description:
+      "Sub-200ms response times with automatic data ingestion and instant recommendation generation.",
+  },
+  {
+    icons: icons.Target,
+    title: "Hyperlocal Precision",
+    description:
+      "Farm-specific predictions and recommendations tailored to your exact location and crop types.",
+  },
 ];
 
 export const NAVIGATION = [
