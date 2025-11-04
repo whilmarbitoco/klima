@@ -57,7 +57,7 @@ export const NAVIGATION = [
   { name: "Dashboard", href: "/user/dashboard", icon: Home },
   { name: "Analytics", href: "/user/analytics", icon: BarChart3 },
   { name: "Weather", href: "/user/weather", icon: Cloud },
-  { name: "Message", href: "/user/message", icon: MessageCircleIcon },
+  { name: "AI Assistant", href: "/user/message", icon: MessageCircleIcon },
   { name: "Settings", href: "/user/settings", icon: Settings },
 ];
 

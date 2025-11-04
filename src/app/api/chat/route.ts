@@ -33,7 +33,8 @@ export async function POST(request: NextRequest) {
 
     const weatherData = weather.map((w) => weatherToText(w)).join("\n");
 
-    const farmDetail = farmToText(farm);
+    console.log("FARM", farm);
+    const farmDetail = farm.crops != undefined ? farmToText(farm) : "";
 
     const prompt = createChatPromptRAG(context, weatherData, farmDetail);
     const genAI = await generateText(prompt, message);

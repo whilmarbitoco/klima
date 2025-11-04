@@ -21,6 +21,12 @@ export default function WeatherPage() {
   const [devices, setDevices] = useState<Device[]>([]);
   const [weatherData, setWeatherData] = useState<Weather[]>([]);
   const [filteredData, setFilteredData] = useState<Weather[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [dateFilter, setDateFilter] = useState("");
+  const [tempFilter, setTempFilter] = useState("");
+  const [humidityFilter, setHumidityFilter] = useState("");
+  const [pressureFilter, setPressureFilter] = useState("");
+  const itemsPerPage = 5;
 
   const [currentUser, loading] = useCurrentUser();
 
@@ -46,6 +52,47 @@ export default function WeatherPage() {
     }
     fetchWeatherData();
   }, [deviceId]);
+
+  useEffect(() => {
+    let filtered = weatherData;
+    
+    if (dateFilter) {
+      filtered = filtered.filter(item => item.time?.includes(dateFilter));
+    }
+    
+    if (tempFilter) {
+      filtered = filtered.filter(item => {
+        const temp = item.temp || 0;
+        if (tempFilter === 'high') return temp > 30;
+        if (tempFilter === 'low') return temp < 20;
+        if (tempFilter === 'normal') return temp >= 20 && temp <= 30;
+        return true;
+      });
+    }
+    
+    if (humidityFilter) {
+      filtered = filtered.filter(item => {
+        const humidity = item.humidity || 0;
+        if (humidityFilter === 'high') return humidity > 80;
+        if (humidityFilter === 'low') return humidity < 60;
+        if (humidityFilter === 'normal') return humidity >= 60 && humidity <= 80;
+        return true;
+      });
+    }
+    
+    if (pressureFilter) {
+      filtered = filtered.filter(item => {
+        const pressure = item.pressure || 0;
+        if (pressureFilter === 'high') return pressure > 1020;
+        if (pressureFilter === 'low') return pressure < 1000;
+        if (pressureFilter === 'normal') return pressure >= 1000 && pressure <= 1020;
+        return true;
+      });
+    }
+    
+    setFilteredData(filtered);
+    setCurrentPage(1);
+  }, [weatherData, dateFilter, tempFilter, humidityFilter, pressureFilter]);
 
 
 
@@ -141,34 +188,111 @@ export default function WeatherPage() {
 
           {/* Data Table */}
           <div className="bg-gray-800/30 rounded-xl border border-gray-700 overflow-hidden">
-            <div className="p-4 border-b border-gray-700">
-              <h3 className="text-lg font-semibold text-white">Recent Data</h3>
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold text-white">Weather Data</h3>
+                <div className="text-sm text-gray-400">
+                  {filteredData.length} records
+                </div>
+              </div>
+              
+              {/* Filters */}
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                <input
+                  type="text"
+                  placeholder="Search date..."
+                  value={dateFilter}
+                  onChange={(e) => setDateFilter(e.target.value)}
+                  className="px-3 py-2 bg-gray-700/50 text-white rounded-lg text-sm border border-gray-600/50 focus:border-green-500 focus:outline-none placeholder-gray-400"
+                />
+                <select
+                  value={tempFilter}
+                  onChange={(e) => setTempFilter(e.target.value)}
+                  className="px-3 py-2 bg-gray-700/50 text-white rounded-lg text-sm border border-gray-600/50 focus:border-green-500 focus:outline-none"
+                >
+                  <option value="">Temperature</option>
+                  <option value="high">High (&gt;30°C)</option>
+                  <option value="normal">Normal</option>
+                  <option value="low">Low (&lt;20°C)</option>
+                </select>
+                <select
+                  value={humidityFilter}
+                  onChange={(e) => setHumidityFilter(e.target.value)}
+                  className="px-3 py-2 bg-gray-700/50 text-white rounded-lg text-sm border border-gray-600/50 focus:border-green-500 focus:outline-none"
+                >
+                  <option value="">Humidity</option>
+                  <option value="high">High (&gt;80%)</option>
+                  <option value="normal">Normal</option>
+                  <option value="low">Low (&lt;60%)</option>
+                </select>
+                <select
+                  value={pressureFilter}
+                  onChange={(e) => setPressureFilter(e.target.value)}
+                  className="px-3 py-2 bg-gray-700/50 text-white rounded-lg text-sm border border-gray-600/50 focus:border-green-500 focus:outline-none"
+                >
+                  <option value="">Pressure</option>
+                  <option value="high">High (&gt;1020)</option>
+                  <option value="normal">Normal</option>
+                  <option value="low">Low (&lt;1000)</option>
+                </select>
+              </div>
             </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left text-gray-300">
-                <thead className="text-xs text-gray-400 uppercase bg-gray-700/50">
-                  <tr>
-                    <th className="px-6 py-3">Time</th>
-                    <th className="px-6 py-3">Temperature (°C)</th>
-                    <th className="px-6 py-3">Humidity (%)</th>
-                    <th className="px-6 py-3">Pressure (hPa)</th>
-                    <th className="px-6 py-3">Soil Moisture (%)</th>
-                    <th className="px-6 py-3">Rainfall (mm)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {weatherData.slice(-10).reverse().map((item, index) => (
-                    <tr key={index} className="border-b border-gray-700 hover:bg-gray-700/30">
-                      <td className="px-6 py-4">{item.time}</td>
-                      <td className="px-6 py-4">{item.temp?.toFixed(1)}</td>
-                      <td className="px-6 py-4">{item.humidity?.toFixed(1)}</td>
-                      <td className="px-6 py-4">{item.pressure?.toFixed(2)}</td>
-                      <td className="px-6 py-4">{item.soilMoisture?.toFixed(1)}</td>
-                      <td className="px-6 py-4">{item.rainfall?.toFixed(3)}</td>
+            
+            <div className="border-t border-gray-700">
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Time</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Temp (°C)</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Humidity (%)</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Pressure</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Soil (%)</th>
+                      <th className="px-6 py-4 text-left text-sm font-medium text-gray-300">Rain (mm)</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filteredData
+                      .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+                      .map((item, index) => (
+                      <tr key={index} className="border-b border-gray-700/50 hover:bg-gray-700/20 transition-colors">
+                        <td className="px-6 py-4 text-sm text-gray-300">{item.time}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">{item.temp?.toFixed(1)}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">{item.humidity?.toFixed(1)}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">{item.pressure?.toFixed(0)}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">{item.soilMoisture?.toFixed(1)}</td>
+                        <td className="px-6 py-4 text-sm text-white font-medium">{item.rainfall?.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            
+            {/* Pagination */}
+            <div className="px-6 py-4 border-t border-gray-700 flex items-center justify-between">
+              <div className="text-sm text-gray-400">
+                {Math.min((currentPage - 1) * itemsPerPage + 1, filteredData.length)}-{Math.min(currentPage * itemsPerPage, filteredData.length)} of {filteredData.length}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="px-4 py-2 bg-gray-700/50 text-white rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                >
+                  Previous
+                </button>
+                <div className="px-3 py-2 text-sm text-gray-300 bg-gray-700/30 rounded-lg">
+                  {currentPage} / {Math.ceil(filteredData.length / itemsPerPage)}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, Math.ceil(filteredData.length / itemsPerPage)))}
+                  disabled={currentPage >= Math.ceil(filteredData.length / itemsPerPage)}
+                  className="px-4 py-2 bg-gray-700/50 text-white rounded-lg text-sm disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-600 transition-colors"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           </div>
         </div>
