@@ -76,3 +76,16 @@ export const getCache = async (userId: string): Promise<string | null> => {
   const result = snapshot.val() as { deviceId: string };
   return result.deviceId;
 };
+
+export const getWeatherData = async (deviceId: string): Promise<Weather[]> => {
+  const weatherRef = ref(db, `weather/${deviceId}`);
+  const snapshot = await get(weatherRef);
+
+  const weatherData: Weather[] = [];
+  snapshot.forEach((childSnapshot) => {
+    const weather = childSnapshot.val() as Weather;
+    weatherData.push(weather);
+  });
+
+  return weatherData.reverse(); // Most recent first
+};

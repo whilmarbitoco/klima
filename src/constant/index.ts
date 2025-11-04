@@ -2,6 +2,7 @@ import { Device, FarmDetails, Weather } from "@/types";
 import {
   BarChart3,
   Bell,
+  Cloud,
   Droplets,
   Gauge,
   Home,
@@ -37,6 +38,7 @@ export const FEATURES = [
 export const NAVIGATION = [
   { name: "Dashboard", href: "/user/dashboard", icon: Home },
   { name: "Analytics", href: "/user/analytics", icon: BarChart3 },
+  { name: "Weather", href: "/user/weather", icon: Cloud },
   { name: "Message", href: "/user/message", icon: MessageCircleIcon },
   { name: "Settings", href: "/user/settings", icon: Settings },
 ];
